@@ -1,42 +1,38 @@
 const animeTimeline = [
     {
-        era: "1960s–1970s",
-        title: "Birth of Anime",
+        era: "1960s",
+        title: "The Founding Father",
         description:
-            "Anime began with hand-drawn frames, limited animation, and strong storytelling roots inspired by manga.",
-        image: "/assets/images/eras/1960s.webp",
+            "Osamu Tezuka establishes the medium with 'Astro Boy', setting the foundation for the anime industry and distinctive large-eye style.",
+        image: "https://www.animationmagazine.net/wordpress/wp-content/uploads/Astro-Boy-post.jpg", // Animation Mag (Reliable)
+        // videoId removed for Image Only mode
         theme: "retro"
     },
     {
-        era: "1980s",
-        title: "OVA & Experimental Era",
+        era: "1980s-90s",
+        title: "The Ghibli Magic",
         description:
-            "Original Video Animations allowed creators to experiment with darker themes and cinematic visuals.",
-        image: "/assets/images/eras/1980s.webp",
-        theme: "neon"
-    },
-    {
-        era: "1990s",
-        title: "Global Expansion",
-        description:
-            "Anime reached worldwide audiences and became part of pop culture globally.",
-        image: "/assets/images/eras/1990s.webp",
-        theme: "classic"
+            "Hayao Miyazaki and Studio Ghibli elevate anime to high art with masterpieces like 'Spirited Away' and 'My Neighbor Totoro', gaining global acclaim.",
+        image: "https://upload.wikimedia.org/wikipedia/en/d/db/Spirited_Away_Japanese_poster.png", // Wikipedia (Reliable)
+        videoId: "ByXuk9QqQkk", // Spirited Away Trailer
+        theme: "ghibli"
     },
     {
         era: "2000s",
-        title: "Big Shonen Era",
+        title: "The Big Three Era",
         description:
-            "Long-running series dominated television and streaming platforms.",
-        image: "/assets/images/eras/2000s.webp",
+            "Naruto, One Piece, and Bleach define a generation, bringing shonen action to mainstream global popularity on TV and growing streaming platforms.",
+        image: "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg", // Wikipedia (Reliable)
+        videoId: "-G9BqkgZXRA", // Naruto Opening 1 (Alternative Upload)
         theme: "action"
     },
     {
-        era: "2010s–Present",
-        title: "Digital & Streaming Era",
+        era: "2010s-Present",
+        title: "Modern Global Hits",
         description:
-            "High-quality animation, global streaming, and diverse genres define modern anime.",
-        image: "/assets/images/eras/2020s.webp",
+            "Attack on Titan redefines the medium with cinematic production values, darker storytelling, and unprecedented worldwide cultural impact.",
+        image: "https://upload.wikimedia.org/wikipedia/en/d/d6/Shingeki_no_Kyojin_manga_volume_1.jpg", // Wikipedia (Reliable)
+        videoId: "MGRm4IzK1SQ", // Attack on Titan Trailer
         theme: "modern"
     }
 ];
