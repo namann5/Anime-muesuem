@@ -47,25 +47,25 @@ export default function Home({ onEnter }) {
   ]
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="relative min-h-screen overflow-hidden aurora-bg cyber-grid">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Gradient Orbs */}
+        {/* Gradient Orbs with Glow */}
         <div
-          className="absolute -top-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+          className="absolute -top-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob glow-pink fluid-morph"
           style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
         ></div>
         <div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"
+          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 glow-purple fluid-morph"
           style={{ transform: `translate(${-mousePosition.x}px, ${mousePosition.y}px)` }}
         ></div>
         <div
-          className="absolute -bottom-40 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"
+          className="absolute -bottom-40 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 glow-blue fluid-morph"
           style={{ transform: `translate(${mousePosition.x}px, ${-mousePosition.y}px)` }}
         ></div>
 
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+        {/* Mesh Gradient Overlay */}
+        <div className="absolute inset-0 mesh-gradient opacity-30"></div>
       </div>
 
       {/* Content */}
@@ -73,7 +73,7 @@ export default function Home({ onEnter }) {
         {/* Hero Section */}
         <header className="container mx-auto px-6 pt-32 pb-20 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card-3d holographic glow-pink mb-8 animate-fade-in float-slow">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
@@ -106,7 +106,7 @@ export default function Home({ onEnter }) {
                 const evt = new CustomEvent('enterMuseum')
                 window.dispatchEvent(evt)
               }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-bold text-white shadow-2xl shadow-pink-500/50 hover:shadow-pink-500/80 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden"
+              className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-bold text-white neon-border glow-pink magnetic-button ripple overflow-hidden"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Enter the Museum
@@ -119,7 +119,7 @@ export default function Home({ onEnter }) {
 
             <button
               onClick={() => onEnter && onEnter()}
-              className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full font-semibold text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95"
+              className="px-8 py-4 glass-card-3d holographic rounded-full font-semibold text-white magnetic-button ripple"
             >
               Explore Features
             </button>
@@ -127,15 +127,15 @@ export default function Home({ onEnter }) {
 
           {/* Stats */}
           <div className="flex flex-wrap justify-center gap-8 mt-16 animate-fade-in-up animation-delay-800">
-            <div className="text-center">
+            <div className="text-center glass-card-3d p-4 rounded-xl glow-pink float-slow">
               <div className="text-3xl font-bold text-white mb-1">10,000+</div>
               <div className="text-sm text-white/60">Anime Episodes</div>
             </div>
-            <div className="text-center">
+            <div className="text-center glass-card-3d p-4 rounded-xl glow-purple float-medium">
               <div className="text-3xl font-bold text-white mb-1">500+</div>
               <div className="text-sm text-white/60">3D Characters</div>
             </div>
-            <div className="text-center">
+            <div className="text-center glass-card-3d p-4 rounded-xl glow-blue float-fast">
               <div className="text-3xl font-bold text-white mb-1">50+</div>
               <div className="text-sm text-white/60">Years of History</div>
             </div>
@@ -155,7 +155,7 @@ export default function Home({ onEnter }) {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group relative p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 hover:-translate-y-2 cursor-pointer animate-fade-in-up"
+                className="group card-3d perspective-1000 preserve-3d glass-card-3d holographic p-6 rounded-2xl cursor-pointer animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Gradient Background on Hover */}
