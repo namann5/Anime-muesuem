@@ -1,9 +1,10 @@
 /**
  * Streaming API Client (Internal Backend Bridge)
- * Communicates with the local Express server on port 3001
+ * Communicates with the backend server (localhost in dev, production URL in deployment)
  */
 
-const BACKEND_URL = 'http://localhost:3001/api';
+// Use environment variable for backend URL, fallback to localhost for development
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 /**
  * Search anime on the streaming provider (AnimePahe)
