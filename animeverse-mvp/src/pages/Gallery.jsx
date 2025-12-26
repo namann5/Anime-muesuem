@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useCallback, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Html } from '@react-three/drei'
+import { OrbitControls, Html, Environment, SpotLight, ContactShadows } from '@react-three/drei'
 import ModelViewer from '../components/ModelViewer'
 import GalleryUI from '../components/GalleryUI'
 import EnvironmentLoader from '../components/EnvironmentLoader'
@@ -8,15 +8,10 @@ import CharacterUploadModal from '../components/CharacterUploadModal'
 import AdminLoginModal from '../components/AdminLoginModal'
 import CharacterGalleryGrid from '../components/CharacterGalleryGrid'
 import CharacterCardGrid from '../components/CharacterCardGrid'
-import FirstPersonControls from '../components/FirstPersonControls'
-import MuseumFloor from '../components/MuseumFloor'
-import MuseumWalls from '../components/MuseumWalls'
-import ExhibitPedestal from '../components/ExhibitPedestal'
 import { characters as staticCharacters } from '../data/characters'
 import { getAllCharacters, deleteCharacter } from '../services/characterService'
 
 export default function Gallery({ showControls = false }) {
-  // Default to local sample (downloaded into public/models/hero.glb)
   const [modelSrc, setModelSrc] = useState('/models/hero.glb')
   const [clips, setClips] = useState([])
   const [playing, setPlaying] = useState(false)
@@ -38,6 +33,12 @@ export default function Gallery({ showControls = false }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [showAdminLogin, setShowAdminLogin] = useState(false)
 
+  // New features
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCharacter, setSelectedCharacter] = useState(null)
+  const [viewMode, setViewMode] = useState('3d') // '3d' or 'grid'
+  const [sortBy, setSortBy] = useState('name') // 'name', 'anime', 'recent'
+
   // Check admin status on mount
   useEffect(() => {
     const adminStatus = sessionStorage.getItem('isAdmin') === 'true'
@@ -49,11 +50,9 @@ export default function Gallery({ showControls = false }) {
     async function loadCharacters() {
       try {
         const firebaseChars = await getAllCharacters()
-        // Merge static characters with Firebase characters
         setCharacters([...staticCharacters, ...firebaseChars])
       } catch (error) {
         console.error('Error loading characters:', error)
-        // Fall back to static characters
         setCharacters(staticCharacters)
       } finally {
         setLoadingCharacters(false)
@@ -62,33 +61,26 @@ export default function Gallery({ showControls = false }) {
     loadCharacters()
   }, [])
 
-  // Handle admin login button click
   const handleAdminAccess = () => {
     if (isAdmin) {
-      // Already admin, open upload modal
       setShowUploadModal(true)
     } else {
-      // Show login modal
       setShowAdminLogin(true)
     }
   }
 
-  // Handle successful admin login
   const handleAdminLoginSuccess = () => {
     setIsAdmin(true)
   }
 
-  // Handle admin logout
   const handleLogout = () => {
     sessionStorage.removeItem('isAdmin')
     setIsAdmin(false)
   }
 
-  // Handle character deletion
   const handleDeleteCharacter = async (characterId) => {
     try {
       await deleteCharacter(characterId)
-      // Reload characters after deletion
       const firebaseChars = await getAllCharacters()
       setCharacters([...staticCharacters, ...firebaseChars])
     } catch (error) {
@@ -102,14 +94,13 @@ export default function Gallery({ showControls = false }) {
     const url = URL.createObjectURL(file)
     setModelSrc(url)
     setModelName(file.name)
-    setModelName(file.name)
   }, [])
 
   const handleSelectCharacter = useCallback(char => {
     if (!char) return
     setModelSrc(char.modelUrl)
     setModelName(char.name)
-    // Reset clips when switching models
+    setSelectedCharacter(char)
     setClips([])
     setClipIndex(-1)
   }, [])
@@ -124,7 +115,6 @@ export default function Gallery({ showControls = false }) {
     if (typeof play === 'function') play()
   }, [])
 
-  // wrapper to also capture rotate callback
   const handleModelReadyWrapper = useCallback(payload => {
     if (payload && typeof payload.rotate === 'function') setRotateFn(() => payload.rotate)
     handleModelReady(payload)
@@ -139,18 +129,92 @@ export default function Gallery({ showControls = false }) {
     })
   }, [playFn, pauseFn])
 
+  // Filter and sort characters
+  const filteredCharacters = characters
+    .filter(char =>
+      char.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (char.anime && char.anime.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+    .sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name)
+      if (sortBy === 'anime') return (a.anime || '').localeCompare(b.anime || '')
+      return 0
+    })
+
   return (
-    <div className="flex h-screen flex-col bg-gradient-dark">
-      <header className="border-b border-anime-pink/10 bg-white/[0.02] px-6 py-6 text-center">
-        <h2 className="m-0 bg-gradient-anime bg-clip-text text-4xl font-bold tracking-wide text-transparent">
-          3D Character Gallery
-        </h2>
-        <p className="mt-2 text-sm text-anime-muted">
-          Select a character from the library or upload your own GLB model
-        </p>
+    <div className="flex h-screen flex-col bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+      {/* Enhanced Header */}
+      <header className="relative border-b border-white/10 bg-black/20 backdrop-blur-md px-6 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-4xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                3D Character Gallery
+              </h2>
+              <p className="mt-2 text-sm text-white/60">
+                Explore {filteredCharacters.length} stunning 3D character models
+              </p>
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${viewMode === '3d'
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg'
+                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                  }`}
+              >
+                🎨 3D View
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${viewMode === 'grid'
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg'
+                    : 'bg-white/5 text-white/60 hover:bg-white/10'
+                  }`}
+              >
+                📱 Grid View
+              </button>
+            </div>
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="flex gap-4 items-center">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                placeholder="Search characters or anime..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-3 pl-12 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50 focus:bg-white/10 transition-all"
+              />
+              <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            {/* Sort */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-500/50 cursor-pointer"
+            >
+              <option value="name">Sort by Name</option>
+              <option value="anime">Sort by Anime</option>
+              <option value="recent">Recently Added</option>
+            </select>
+
+            {/* Results Count */}
+            <div className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white/60 text-sm">
+              {filteredCharacters.length} characters
+            </div>
+          </div>
+        </div>
       </header>
 
-      {/* Only show controls if unlocked (4 clicks on Gallery) */}
+      {/* Only show controls if unlocked */}
       {showControls && (
         <>
           <GalleryUI
@@ -179,7 +243,6 @@ export default function Gallery({ showControls = false }) {
             isOpen={showUploadModal}
             onClose={() => setShowUploadModal(false)}
             onSuccess={async () => {
-              // Reload characters after successful upload
               const firebaseChars = await getAllCharacters()
               setCharacters([...staticCharacters, ...firebaseChars])
             }}
@@ -187,35 +250,48 @@ export default function Gallery({ showControls = false }) {
         </>
       )}
 
-      <main id="main" style={{ flex: 1 }}>
-        <div style={{ position: 'relative', height: '100%' }}>
-          <div
-            tabIndex={0}
-            aria-label={`3D view of ${modelName}`}
-            style={{ position: 'absolute', inset: 0 }}
-            onKeyDown={e => {
-              if (!rotateFn) return
-              const step = 0.12
-              if (e.key === 'ArrowLeft') rotateFn(-step, 0)
-              if (e.key === 'ArrowRight') rotateFn(step, 0)
-              if (e.key === 'ArrowUp') rotateFn(0, -step)
-              if (e.key === 'ArrowDown') rotateFn(0, step)
-            }}
-          >
+      <main className="flex-1 relative overflow-hidden">
+        {viewMode === '3d' ? (
+          <div className="relative h-full">
+            {/* 3D Canvas */}
             <Canvas camera={{ position: [0, 2, 8], fov: 50 }} shadows>
-              <Suspense fallback={<Html center><div style={{ color: 'white' }}>Loading gallery...</div></Html>}>
-                {/* Lighting */}
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-                <spotLight position={[-10, 15, -5]} intensity={0.5} />
+              <Suspense fallback={<Html center><div className="text-white text-lg">Loading gallery...</div></Html>}>
+                {/* Enhanced Lighting */}
+                <ambientLight intensity={0.3} />
+                <directionalLight position={[10, 10, 5]} intensity={0.8} castShadow />
+                <SpotLight
+                  position={[0, 10, 0]}
+                  angle={0.5}
+                  penumbra={1}
+                  intensity={1}
+                  castShadow
+                  color="#ff6ea6"
+                />
+                <SpotLight
+                  position={[-5, 5, 5]}
+                  angle={0.3}
+                  penumbra={1}
+                  intensity={0.5}
+                  color="#a78bfa"
+                />
+                <pointLight position={[5, 5, -5]} intensity={0.5} color="#60a5fa" />
 
                 {/* Environment */}
                 {envPreset !== 'none' && (
-                  <EnvironmentLoader preset={envPreset} background={envBackground} />
+                  <Environment preset={envPreset} background={envBackground} />
                 )}
 
+                {/* Contact Shadows for realism */}
+                <ContactShadows
+                  position={[0, -0.5, 0]}
+                  opacity={0.4}
+                  scale={20}
+                  blur={2}
+                  far={4}
+                />
+
                 {/* Character Gallery Grid */}
-                <CharacterGalleryGrid characters={characters} />
+                <CharacterGalleryGrid characters={filteredCharacters} />
 
                 {/* Camera Controls */}
                 <OrbitControls
@@ -224,35 +300,72 @@ export default function Gallery({ showControls = false }) {
                   enableZoom={true}
                   minDistance={5}
                   maxDistance={30}
+                  autoRotate={!selectedCharacter}
+                  autoRotateSpeed={0.5}
                 />
               </Suspense>
             </Canvas>
-          </div>
 
-          <div aria-live="polite" style={{ position: 'absolute', left: 12, bottom: 12, background: 'rgba(2,6,18,0.6)', padding: '8px 12px', borderRadius: 8 }}>
-            <div style={{ fontSize: 12, color: '#9aa0a6' }}>Model</div>
-            <div style={{ fontWeight: 700 }}>{modelName}</div>
-            <div style={{ fontSize: 12, color: '#9aa0a6', marginTop: 6 }}>Clip: {clipIndex >= 0 ? (clips[clipIndex]?.name || `clip ${clipIndex}`) : '—'}</div>
-          </div>
-        </div>
+            {/* Character Info Panel */}
+            {selectedCharacter && (
+              <div className="absolute top-6 right-6 w-80 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 animate-fade-in-up">
+                <button
+                  onClick={() => setSelectedCharacter(null)}
+                  className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
 
-        {/* Character Cards Section Below */}
-        <div className="border-t border-anime-pink/10 bg-gradient-to-b from-anime-dark to-black">
-          <div className="px-6 py-4">
-            <h3 className="bg-gradient-anime bg-clip-text text-xl font-bold text-transparent">
-              Character Collection ({characters.length})
-            </h3>
-            <p className="mt-1 text-sm text-anime-muted">
-              Click any character card to view in 3D gallery above
-            </p>
+                <h3 className="text-2xl font-bold text-white mb-2">{selectedCharacter.name}</h3>
+                {selectedCharacter.anime && (
+                  <p className="text-pink-400 text-sm font-medium mb-4">From: {selectedCharacter.anime}</p>
+                )}
+
+                {selectedCharacter.description && (
+                  <p className="text-white/70 text-sm leading-relaxed mb-4">
+                    {selectedCharacter.description}
+                  </p>
+                )}
+
+                <div className="flex gap-2 mt-4">
+                  <button className="flex-1 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg text-white font-medium hover:shadow-lg transition-all">
+                    View Details
+                  </button>
+                  <button className="px-4 py-2 bg-white/10 rounded-lg text-white hover:bg-white/20 transition-all">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Controls Info */}
+            <div className="absolute bottom-6 left-6 px-4 py-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl">
+              <div className="text-white text-sm font-medium mb-2">🎮 Controls</div>
+              <div className="text-white/60 text-xs space-y-1">
+                <div>🖱️ Drag to rotate</div>
+                <div>🔍 Scroll to zoom</div>
+                <div>👆 Click character for info</div>
+              </div>
+            </div>
           </div>
-          <CharacterCardGrid
-            characters={characters}
-            onSelectCharacter={handleSelectCharacter}
-            isAdmin={isAdmin}
-            onDeleteCharacter={handleDeleteCharacter}
-          />
-        </div>
+        ) : (
+          /* Grid View */
+          <div className="h-full overflow-y-auto p-6 bg-gradient-to-b from-transparent to-black/20">
+            <CharacterCardGrid
+              characters={filteredCharacters}
+              onSelectCharacter={(char) => {
+                handleSelectCharacter(char)
+                setViewMode('3d')
+              }}
+              isAdmin={isAdmin}
+              onDeleteCharacter={handleDeleteCharacter}
+            />
+          </div>
+        )}
       </main>
     </div>
   )
