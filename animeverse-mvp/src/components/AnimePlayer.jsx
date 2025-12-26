@@ -38,9 +38,17 @@ export default function AnimePlayer({
             <div className="relative bg-black rounded-xl overflow-hidden aspect-video shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5">
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-anime-dark z-20">
-                        <div className="flex flex-col items-center gap-4">
+                        <div className="flex flex-col items-center gap-4 max-w-md px-6">
                             <div className="w-12 h-12 border-4 border-anime-pink/20 border-t-anime-pink rounded-full animate-spin"></div>
                             <span className="text-white/40 text-xs font-bold tracking-widest uppercase animate-pulse">Loading Player</span>
+                            <div className="text-center mt-2">
+                                <p className="text-white/60 text-xs">
+                                    🔒 <span className="text-yellow-400">Security check in progress...</span>
+                                </p>
+                                <p className="text-white/40 text-[10px] mt-1">
+                                    This may take 5-10 seconds on first load
+                                </p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -105,7 +113,8 @@ export default function AnimePlayer({
                     <div className="flex-1">
                         <h4 className="text-white font-bold text-sm mb-1">🎬 Streaming via AnimePahe</h4>
                         <p className="text-white/60 text-xs leading-relaxed">
-                            High-quality anime streaming. Use fullscreen for the best experience!
+                            <span className="text-yellow-400 font-semibold">⏳ First load may take 5-10 seconds</span> due to security checks.
+                            Subsequent episodes load faster. Use fullscreen for the best experience!
                         </p>
                     </div>
                 </div>
