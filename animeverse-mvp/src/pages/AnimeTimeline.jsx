@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import animeTimeline from "../data/animeTimeline";
 
-function AnimeTimeline({ onNavigate }) {
+function AnimeTimeline() {
     const [selectedEra, setSelectedEra] = useState(null);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [particles, setParticles] = useState([]);
 
     // Track scroll progress
     useEffect(() => {
@@ -14,6 +15,17 @@ function AnimeTimeline({ onNavigate }) {
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Generate particles
+    useEffect(() => {
+        const newParticles = Array.from({ length: 50 }, (_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            delay: Math.random() * 20,
+            duration: 15 + Math.random() * 10
+        }));
+        setParticles(newParticles);
     }, []);
 
     const themeColors = {
@@ -63,20 +75,29 @@ function AnimeTimeline({ onNavigate }) {
     };
 
     return (
-        <div className="min-h-screen mesh-gradient-modern relative overflow-hidden">
-            {/* Ambient Animated Glows */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-500/10 rounded-full blur-[120px] animate-blob"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
+        <div className="min-h-screen aurora-bg cyber-grid relative overflow-hidden">
+            {/* Animated Particles */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {particles.map(particle => (
+                    <div
+                        key={particle.id}
+                        className="particle absolute w-1 h-1 bg-white rounded-full opacity-50"
+                        style={{
+                            left: `${particle.left}%`,
+                            animation: `float ${particle.duration}s infinite`,
+                            animationDelay: `${particle.delay}s`
+                        }}
+                    />
+                ))}
             </div>
 
-            {/* Grain Overlay for Cinematic Feel */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+            {/* Mesh Gradient Overlay */}
+            <div className="absolute inset-0 mesh-gradient opacity-20 pointer-events-none"></div>
 
-            {/* Scroll Progress Bar - Moved to bottom for cleaner HUD */}
-            <div className="fixed bottom-0 left-0 right-0 h-1 bg-white/10 z-50">
+            {/* Scroll Progress Bar */}
+            <div className="fixed top-[104px] left-0 right-0 h-1 bg-white/5 z-[100]">
                 <div
-                    className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 transition-all duration-300 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
                     style={{ width: `${scrollProgress}%` }}
                 ></div>
             </div>
@@ -304,16 +325,10 @@ function AnimeTimeline({ onNavigate }) {
                             Visit our <span className="text-pink-400 font-bold">Virtual Museum</span> to see iconic characters from each era in stunning 3D
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
-                            <button 
-                                onClick={() => onNavigate('museum')}
-                                className="neon-border glow-purple px-10 py-5 rounded-full font-black text-white text-lg magnetic-button ripple holographic"
-                            >
+                            <button className="neon-border glow-purple px-10 py-5 rounded-full font-black text-white text-lg magnetic-button ripple holographic">
                                 🏛️ Visit Museum
                             </button>
-                            <button 
-                                onClick={() => onNavigate('gallery')}
-                                className="glass-card-3d holographic px-10 py-5 rounded-full font-bold text-white text-lg magnetic-button ripple"
-                            >
+                            <button className="glass-card-3d holographic px-10 py-5 rounded-full font-bold text-white text-lg magnetic-button ripple">
                                 🎨 View Gallery
                             </button>
                         </div>

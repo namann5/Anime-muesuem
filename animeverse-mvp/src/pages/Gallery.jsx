@@ -136,7 +136,7 @@ export default function Gallery({ showControls = false }) {
   return (
     <div className="flex h-screen flex-col bg-[#050505] selection:bg-pink-500/30">
       {/* Modern HUD Header */}
-      <header className="fixed top-28 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl pointer-events-none">
+      <header className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl pointer-events-none">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pointer-events-auto">
           <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
             <div>
