@@ -45,9 +45,9 @@ export default function Support() {
             <p className="text-sm text-white/40">Use any UPI app — GPay, PhonePe, Paytm, etc.</p>
           </div>
 
-          <div className="flex justify-center mb-10">
-            <UPIQRCode vpa="6399870376@superyes" payeeName="AnimeVerse" transactionNote="Support AnimeVerse" size={200} />
-          </div>
+            <div className="flex justify-center mb-10">
+              <UPIQRCode vpa="singh.4481@superyes" payeeName="AnimeVerse" transactionNote="Support AnimeVerse" size={200} />
+            </div>
 
           <div className="grid grid-cols-3 gap-4 mb-12">
             {['₹49', '₹99', '₹199'].map((amt) => (
