@@ -21,9 +21,10 @@ export default function Gallery({ showControls = false }) {
   const [pauseFn, setPauseFn] = useState(null)
   const [modelName, setModelName] = useState('hero.glb')
   const [clipIndex, setClipIndex] = useState(-1)
-  const [rotateFn, setRotateFn] = useState(null)
-
-  const [showUploadModal, setShowUploadModal] = useState(false)
+    const [rotateFn, setRotateFn] = useState(null)
+    const [wireframe, setWireframe] = useState(false)
+  
+    const [showUploadModal, setShowUploadModal] = useState(false)
   const [characters, setCharacters] = useState(staticCharacters)
   const [loadingCharacters, setLoadingCharacters] = useState(true)
 
@@ -138,31 +139,38 @@ export default function Gallery({ showControls = false }) {
       {/* Modern HUD Header */}
       <header className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl pointer-events-none">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pointer-events-auto">
-          <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
-            <div>
-                <h2 className="text-xl font-black tracking-tighter italic leading-none">
-                  MODELS SHOWCASE
-                </h2>
-              <p className="text-[10px] font-bold tracking-widest text-pink-500 uppercase mt-1">
-                {filteredCharacters.length} Entities Indexed
-              </p>
-            </div>
-            <div className="h-6 w-[1px] bg-white/10"></div>
-            <div className="flex gap-2">
+            <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
+              <div>
+                  <h2 className="text-xl font-black tracking-tighter italic leading-none">
+                    MODELS SHOWCASE
+                  </h2>
+                <p className="text-[10px] font-bold tracking-widest text-pink-500 uppercase mt-1">
+                  {filteredCharacters.length} Entities Indexed
+                </p>
+              </div>
+              <div className="h-6 w-[1px] bg-white/10"></div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('3d')}
+                  className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${viewMode === '3d' ? 'bg-pink-500 text-white' : 'text-white/40 hover:text-white'}`}
+                >
+                  3D VIEW
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-pink-500 text-white' : 'text-white/40 hover:text-white'}`}
+                >
+                  GRID VIEW
+                </button>
+              </div>
+              <div className="h-6 w-[1px] bg-white/10"></div>
               <button
-                onClick={() => setViewMode('3d')}
-                className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${viewMode === '3d' ? 'bg-pink-500 text-white' : 'text-white/40 hover:text-white'}`}
+                onClick={() => setWireframe(!wireframe)}
+                className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all border ${wireframe ? 'bg-orange-500/20 border-orange-500 text-orange-500' : 'border-white/10 text-white/40 hover:text-white'}`}
               >
-                3D VIEW
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-pink-500 text-white' : 'text-white/40 hover:text-white'}`}
-              >
-                GRID VIEW
+                WIREFRAME (BLENDER)
               </button>
             </div>
-          </div>
 
           <div className="flex gap-4 items-center w-full md:w-auto">
             <div className="relative flex-1 md:w-80">
@@ -222,10 +230,10 @@ export default function Gallery({ showControls = false }) {
                 <directionalLight position={[10, 10, 5]} intensity={0.5} castShadow />
                 <SpotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={1.5} castShadow color="#ff0055" />
                 <pointLight position={[5, 5, -5]} intensity={1} color="#7000ff" />
-                {envPreset !== 'none' && <Environment preset={envPreset} background={envBackground} />}
-                <ContactShadows position={[0, -0.5, 0]} opacity={0.4} scale={20} blur={2} far={4} />
-                <CharacterGalleryGrid characters={filteredCharacters} />
-                <OrbitControls makeDefault enablePan={true} enableZoom={true} minDistance={5} maxDistance={30} autoRotate={!selectedCharacter} autoRotateSpeed={0.5} />
+                  {envPreset !== 'none' && <Environment preset={envPreset} background={envBackground} />}
+                  <ContactShadows position={[0, -0.5, 0]} opacity={0.4} scale={20} blur={2} far={4} />
+                  <CharacterGalleryGrid characters={filteredCharacters} wireframe={wireframe} />
+                  <OrbitControls makeDefault enablePan={true} enableZoom={true} minDistance={5} maxDistance={30} autoRotate={!selectedCharacter} autoRotateSpeed={0.5} />
               </Suspense>
             </Canvas>
 

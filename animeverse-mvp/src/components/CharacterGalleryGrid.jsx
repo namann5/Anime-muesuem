@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import CharacterCard from './CharacterCard';
 import { Html } from '@react-three/drei';
 
-export default function CharacterGalleryGrid({ characters = [] }) {
+export default function CharacterGalleryGrid({ characters = [], wireframe = false }) {
     // Calculate grid positions
     const columns = 4;
     const spacing = 3;
@@ -49,6 +49,7 @@ export default function CharacterGalleryGrid({ characters = [] }) {
                         character={character}
                         position={getPosition(index)}
                         index={index}
+                        wireframe={wireframe}
                     />
                 </Suspense>
             ))}

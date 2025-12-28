@@ -99,5 +99,45 @@ export const characters = [
         modelUrl: 'https://models.readyplayer.me/649c7890815f0fe5e6e96fed.glb',
         thumbnailUrl: '',
         role: 'Demon Slayer'
+    },
+    {
+        id: 'roronoa-zoro',
+        name: 'Roronoa Zoro',
+        malId: 62,
+        animeTitle: 'One Piece',
+        description: 'The swordsman of the Straw Hat Pirates. He uses the unique Three Sword Style.',
+        modelUrl: 'https://models.readyplayer.me/647a1234815f0fe5e6e95abc.glb', // Placeholder
+        thumbnailUrl: '',
+        role: 'Swordsman'
+    },
+    {
+        id: 'saitama',
+        name: 'Saitama',
+        malId: 24701,
+        animeTitle: 'One Punch Man',
+        description: 'The strongest hero who can defeat any opponent with a single punch.',
+        modelUrl: 'https://models.readyplayer.me/648b5678c5b05779c6587def.glb', // Placeholder
+        thumbnailUrl: '',
+        role: 'Hero'
+    },
+    {
+        id: 'nezuko-kamado',
+        name: 'Nezuko Kamado',
+        malId: 38001,
+        animeTitle: 'Demon Slayer',
+        description: 'Tanjiro\'s sister who was turned into a demon but retains her human soul.',
+        modelUrl: 'https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb', // Placeholder
+        thumbnailUrl: '',
+        role: 'Demon'
+    },
+    {
+        id: 'ichigo-kurosaki',
+        name: 'Ichigo Kurosaki',
+        malId: 35,
+        animeTitle: 'Bleach',
+        description: 'A substitute Soul Reaper who protects the world of the living from Hollows.',
+        modelUrl: 'https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb', // Placeholder
+        thumbnailUrl: '',
+        role: 'Soul Reaper'
     }
 ];
