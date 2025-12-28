@@ -84,67 +84,50 @@ export default function App() {
 
   return (
     <div>
-      <nav className="fixed right-4 top-4 z-20 flex gap-1 rounded-xl border border-white/10 bg-anime-dark/70 p-2 backdrop-blur-md">
-        <button
-          onClick={() => navigateTo('home')}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-300
-            ${route === 'home'
-              ? 'bg-gradient-anime text-anime-dark shadow-lg shadow-anime-pink/30 font-bold'
-              : 'border border-anime-pink/30 bg-white/5 text-white hover:bg-anime-pink/15'
-            }
-          `}
-        >
-          Home
-        </button>
-        <button
-          onClick={handleGalleryClick}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-300
-            ${route === 'gallery'
-              ? 'bg-gradient-anime text-anime-dark shadow-lg shadow-anime-pink/30 font-bold'
-              : 'border border-anime-pink/30 bg-white/5 text-white hover:bg-anime-pink/15'
-            }
-          `}
-        >
-          Gallery
-        </button>
-        <button
-          onClick={() => navigateTo('watch-anime')}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-300
-            ${route === 'watch-anime' || route === 'anime-detail'
-              ? 'bg-gradient-anime text-anime-dark shadow-lg shadow-anime-pink/30 font-bold'
-              : 'border border-anime-pink/30 bg-white/5 text-white hover:bg-anime-pink/15'
-            }
-          `}
-        >
-          ▶️ Watch Anime
-        </button>
-        <button
-          onClick={() => navigateTo('museum')}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-300
-            ${route === 'museum'
-              ? 'bg-gradient-anime text-anime-dark shadow-lg shadow-anime-pink/30 font-bold'
-              : 'border border-anime-pink/30 bg-white/5 text-white hover:bg-anime-pink/15'
-            }
-          `}
-        >
-          🏛️ Museum
-        </button>
-        <button
-          onClick={() => navigateTo('timeline')}
-          className={`
-            rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-300
-            ${route === 'timeline'
-              ? 'bg-gradient-anime text-anime-dark shadow-lg shadow-anime-pink/30 font-bold'
-              : 'border border-anime-pink/30 bg-white/5 text-white hover:bg-anime-pink/15'
-            }
-          `}
-        >
-          Timeline
-        </button>
+      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-4xl">
+        <div className="glass-modern px-8 py-4 rounded-2xl flex items-center justify-between shadow-2xl border-white/5">
+          <div 
+            className="text-xl font-black italic tracking-tighter cursor-pointer group"
+            onClick={() => navigateTo('home')}
+          >
+            ANIME<span className="text-pink-500 group-hover:text-white transition-colors">VERSE</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-8">
+            {[
+              { id: 'home', label: 'Home' },
+              { id: 'gallery', label: 'Gallery' },
+              { id: 'watch-anime', label: 'Cinema' },
+              { id: 'museum', label: 'Museum' },
+              { id: 'timeline', label: 'Timeline' }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => item.id === 'gallery' ? handleGalleryClick() : navigateTo(item.id)}
+                className={`text-[10px] font-black tracking-[0.2em] uppercase transition-all relative py-2 ${
+                  route === item.id || (item.id === 'watch-anime' && route === 'anime-detail')
+                    ? 'text-pink-500' 
+                    : 'text-white/40 hover:text-white'
+                }`}
+              >
+                {item.label}
+                {(route === item.id || (item.id === 'watch-anime' && route === 'anime-detail')) && (
+                  <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-pink-500 rounded-full animate-pulse"></div>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button className="md:hidden glass-card-modern p-2 rounded-lg text-white">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+            <div className="hidden md:block h-6 w-[1px] bg-white/10 mx-2"></div>
+            <button className="hidden md:block text-[10px] font-black tracking-widest text-white/40 hover:text-pink-500 transition-colors">
+              SIGN IN
+            </button>
+          </div>
+        </div>
       </nav>
 
       {/* Page rendering with transitions and suspense */}
