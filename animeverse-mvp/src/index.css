@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Futuristic 3D UI System */
+@import './styles/futuristic-ui.css';
+
+/* Import Unicorn Studio Animations */
+@import './styles/unicorn-studio.css';
+
 :root {
     --anime-dark: #0a0a0b;
     --anime-card: #141414;
@@ -142,15 +148,20 @@ body {
 
 /* New Home Page Animations */
 @keyframes blob {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translate(0, 0) scale(1);
     }
+
     25% {
         transform: translate(20px, -50px) scale(1.1);
     }
+
     50% {
         transform: translate(-20px, 20px) scale(0.9);
     }
+
     75% {
         transform: translate(50px, 50px) scale(1.05);
     }
@@ -169,9 +180,12 @@ body {
 }
 
 @keyframes gradient-x {
-    0%, 100% {
+
+    0%,
+    100% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
@@ -186,6 +200,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -200,6 +215,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -228,9 +244,12 @@ body {
 
 /* Pulse animation for live badge */
 @keyframes pulse-glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(236, 72, 153, 0.5);
     }
+
     50% {
         box-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
     }
