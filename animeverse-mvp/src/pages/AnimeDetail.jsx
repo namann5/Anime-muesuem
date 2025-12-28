@@ -13,7 +13,7 @@ export default function AnimeDetail({ malId, onBack }) {
     const [activeTab, setActiveTab] = useState('watch');
 
     // Streaming state
-    const [gogoanimeData, setGogoanimeData] = useState(null);
+    const [streamingData, setStreamingData] = useState(null);
     const [episodes, setEpisodes] = useState([]);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [currentEpisodeNumber, setCurrentEpisodeNumber] = useState(1);
@@ -38,7 +38,7 @@ export default function AnimeDetail({ malId, onBack }) {
             setCharacters(charactersData.slice(0, 12)); // Limit to top 12 characters
             setRecommendations(recommendationsData);
 
-            // Load episodes from Gogoanime using robust search
+            // Load episodes from AnimePahe using robust search
             loadEpisodes(animeData.titleEnglish, animeData.titleRomaji);
         } catch (err) {
             setError('Failed to load anime details');
@@ -62,7 +62,7 @@ export default function AnimeDetail({ malId, onBack }) {
                 const info = await getAnimeInfo(animepahe.id);
                 console.log('Episode info:', info);
 
-                setGogoanimeData(info);
+                setStreamingData(info);
                 setEpisodes(info.episodes || []);
 
                 // Auto-select first episode

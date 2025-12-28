@@ -1,12 +1,9 @@
+@import './styles/futuristic-ui.css';
+@import './styles/unicorn-studio.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Futuristic 3D UI System */
-@import './styles/futuristic-ui.css';
-
-/* Import Unicorn Studio Animations */
-@import './styles/unicorn-studio.css';
 
 :root {
     --anime-dark: #0a0a0b;
