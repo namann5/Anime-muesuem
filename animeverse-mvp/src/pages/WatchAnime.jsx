@@ -104,10 +104,10 @@ export default function WatchAnime() {
                         </div>
                     </div>
 
-                    {/* Search Overlay - Modern Floating HUD */}
-                    <div className="absolute top-28 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
-                        <RealTimeSearch onSelect={handleSelectAnime} />
-                    </div>
+                      {/* Search Overlay - Modern Floating HUD */}
+                      <div className="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+                          <RealTimeSearch onSelect={handleSelectAnime} />
+                      </div>
                 </section>
             )}
 

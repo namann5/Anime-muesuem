@@ -151,13 +151,6 @@ export default function AnimeDetail({ malId, onBack }) {
                 </div>
 
                 <div className="absolute inset-0 z-10 container mx-auto px-6 flex flex-col justify-end pb-24">
-                    <button 
-                        onClick={onBack}
-                        className="absolute top-12 left-6 glass-card-modern p-4 rounded-full hover:bg-white/10 transition-colors group"
-                    >
-                        <span className="group-hover:-translate-x-1 transition-transform inline-block">←</span>
-                    </button>
-
                     <div className="flex flex-col md:flex-row gap-12 items-end">
                         <div className="hidden md:block w-72 aspect-[2/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 detail-fade-in">
                             <img src={bannerImage} className="w-full h-full object-cover" alt={anime.title} />

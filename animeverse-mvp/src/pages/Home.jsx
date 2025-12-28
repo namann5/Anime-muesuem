@@ -80,8 +80,8 @@ export default function Home({ onEnter }) {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-pulse delay-700"></div>
       </div>
 
-        <div className="relative z-10">
-          {/* Hero Section */}
+      <div className="relative z-10">
+        {/* Hero Section */}
         <section ref={heroRef} className="container mx-auto px-6 pt-48 pb-20 text-center hero-content">
           <div className="inline-block px-4 py-1.5 glass-card-modern rounded-full text-xs font-bold tracking-widest uppercase mb-8 border-pink-500/30 text-pink-400">
             Evolution of Immersion

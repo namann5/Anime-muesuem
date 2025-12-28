@@ -71,16 +71,9 @@ export default function Museum({ animeFilter }) {
     return (
         <div className="flex h-screen flex-col bg-[#050505] selection:bg-pink-500/30">
             {/* Modern HUD Header */}
-            <header className="fixed top-28 left-0 right-0 z-50 p-6 pointer-events-none">
+            <header className="fixed top-24 left-0 right-0 z-50 p-6 pointer-events-none">
                 <div className="container mx-auto flex items-center justify-between pointer-events-auto">
                     <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
-                        <button 
-                            onClick={() => window.location.hash = ''}
-                            className="text-white/40 hover:text-white transition-colors"
-                        >
-                            ← Exit
-                        </button>
-                        <div className="h-6 w-[1px] bg-white/10"></div>
                         <div>
                             <h2 className="text-xl font-black tracking-tighter italic leading-none">
                                 {animeTitle ? animeTitle.toUpperCase() : 'CORE MUSEUM'}
