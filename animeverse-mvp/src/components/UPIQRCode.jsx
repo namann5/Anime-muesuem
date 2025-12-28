@@ -2,7 +2,7 @@ import React from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 
 export default function UPIQRCode({ 
-  vpa = '6399870376@superyes',
+    vpa = 'singh.4481@superyes',
   payeeName = 'AnimeVerse',
   amount,
   transactionNote = 'Support AnimeVerse',
@@ -26,9 +26,9 @@ export default function UPIQRCode({
             fgColor="#0a0a0f"
           />
         </div>
-        <div className="mt-4 text-center">
-          <p className="text-xs font-mono text-white/50 tracking-wider">{vpa}</p>
-        </div>
+          {/* <div className="mt-4 text-center">
+            <p className="text-xs font-mono text-white/50 tracking-wider">{vpa}</p>
+          </div> */}
       </div>
     </div>
   )
