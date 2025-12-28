@@ -1,0 +1,8 @@
+{
+  "projectId": "57fd94bd-8e04-4533-8397-e2c58811f2e8",
+  "createdAt": 1735395600000,
+  "startupCommands": [
+    "cd animeverse-mvp/server && npm run start",
+    "cd animeverse-mvp && npm run dev"
+  ]
+}
