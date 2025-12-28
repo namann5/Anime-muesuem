@@ -140,9 +140,9 @@ export default function Gallery({ showControls = false }) {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pointer-events-auto">
           <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
             <div>
-              <h2 className="text-xl font-black tracking-tighter italic leading-none">
-                CHARACTER GALLERY
-              </h2>
+                <h2 className="text-xl font-black tracking-tighter italic leading-none">
+                  MODELS SHOWCASE
+                </h2>
               <p className="text-[10px] font-bold tracking-widest text-pink-500 uppercase mt-1">
                 {filteredCharacters.length} Entities Indexed
               </p>
