@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import gsap from 'gsap';
 import { getTop100Anime } from '../services/animeService';
 import RealTimeSearch from '../components/RealTimeSearch';
 import { AnimeGridSkeleton, HeroSkeleton } from '../components/SkeletonLoader';
@@ -7,10 +8,23 @@ export default function WatchAnime() {
     const [animeList, setAnimeList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const containerRef = useRef();
 
     useEffect(() => {
         loadAnime();
     }, []);
+
+    useEffect(() => {
+        if (!loading) {
+            gsap.from('.watch-fade-in', {
+                y: 40,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: 'power4.out'
+            });
+        }
+    }, [loading]);
 
     async function loadAnime() {
         try {
@@ -25,106 +39,85 @@ export default function WatchAnime() {
         }
     }
 
-    // Categorize anime
     const trending = useMemo(() => animeList.slice(0, 15), [animeList]);
     const popular = useMemo(() => [...animeList].sort((a, b) => (b.popularity || 0) - (a.popularity || 0)).slice(0, 15), [animeList]);
     const topRated = useMemo(() => [...animeList].sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 15), [animeList]);
-    const actionAnime = useMemo(() => animeList.filter(a => a.genres?.includes('Action')).slice(0, 15), [animeList]);
 
     const handleSelectAnime = (anime) => {
         window.location.hash = `anime/${anime.malId}`;
     };
 
     if (loading) return (
-        <div className="min-h-screen bg-anime-dark">
-            <HeroSkeleton />
-            <div className="p-10 space-y-12">
-                <AnimeRowSkeleton />
-                <AnimeRowSkeleton />
-                <AnimeRowSkeleton />
-            </div>
+        <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center">
+            <div className="w-16 h-16 border-2 border-pink-500/20 border-t-pink-500 rounded-full animate-spin"></div>
+            <div className="mt-4 text-[10px] font-black tracking-widest uppercase text-pink-500">Initializing Cinema</div>
         </div>
     );
 
     const heroAnime = trending[0];
 
     return (
-        <div className="min-h-screen bg-anime-dark pb-20 overflow-x-hidden">
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                .hide-scrollbar::-webkit-scrollbar { display: none; }
-                .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            `}} />
-
-            {/* Hero Section */}
+        <div ref={containerRef} className="min-h-screen bg-[#050505] pb-20 mesh-gradient-modern selection:bg-pink-500/30">
+            {/* Immersive Hero */}
             {heroAnime && (
-                <section className="relative h-[90vh] w-full overflow-hidden">
+                <section className="relative h-screen w-full overflow-hidden">
                     <img
-                        src={heroAnime.bannerImage || heroAnime.images?.jpg?.large_image_url}
+                        src={heroAnime.images?.jpg?.large_image_url}
                         alt={heroAnime.title}
-                        className="w-full h-full object-cover animate-image-zoom"
+                        className="w-full h-full object-cover scale-110 opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-anime-dark via-anime-dark/40 to-transparent"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-anime-dark/90 via-anime-dark/20 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505]"></div>
 
-                    <div className="absolute bottom-32 left-6 md:left-12 max-w-3xl space-y-6 z-10">
-                        <div className="flex items-center gap-3">
-                            <span className="px-3 py-1 bg-anime-pink text-white text-[10px] font-black rounded-sm uppercase tracking-[0.2em] shadow-lg">
-                                Netflix Original
+                    <div className="absolute inset-0 z-10 container mx-auto px-6 flex flex-col justify-center items-start pt-20 watch-fade-in">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="px-4 py-1.5 glass-card-modern rounded-full text-[10px] font-black tracking-widest uppercase text-pink-400 border-pink-500/20">
+                                HOT NOW
                             </span>
-                            <span className="text-white/60 text-sm font-bold tracking-widest uppercase">
-                                Trending #{heroAnime.rank || 1}
+                            <span className="text-white/40 text-xs font-bold tracking-widest uppercase">
+                                Trending Worldwide
                             </span>
                         </div>
 
-                        <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.9] drop-shadow-2xl">
-                            {heroAnime.title}
+                        <h1 className="text-6xl md:text-9xl font-black mb-6 leading-none tracking-tighter italic">
+                            {heroAnime.title.toUpperCase()}
                         </h1>
 
-                        <div className="flex items-center gap-4 text-white/80 font-bold text-sm">
-                            <span className="text-green-400">{Math.round((heroAnime.score || 8.5) * 10)}% Match</span>
-                            <span>{heroAnime.year || 2023}</span>
-                            <span className="border border-white/40 px-1.5 py-0.5 rounded-sm text-[10px]">HD</span>
-                            <span>{heroAnime.episodes || '?'} Episodes</span>
-                        </div>
-
-                        <p className="text-lg text-white/80 line-clamp-3 max-w-2xl font-medium leading-relaxed drop-shadow-md">
-                            {heroAnime.synopsis}
+                        <p className="max-w-xl text-lg text-white/60 mb-10 font-medium leading-relaxed">
+                            {heroAnime.synopsis?.slice(0, 180)}...
                         </p>
 
-                        <div className="flex flex-wrap gap-4 pt-6">
+                        <div className="flex flex-col sm:flex-row gap-6">
                             <button
                                 onClick={() => handleSelectAnime(heroAnime)}
-                                className="bg-white text-dark px-10 py-4 rounded-md font-black flex items-center gap-3 hover:bg-white/90 transition-all transform hover:scale-105 active:scale-95 shadow-2xl text-xl"
+                                className="btn-modern btn-primary-modern text-lg px-12 py-4 group"
                             >
-                                <svg className="w-8 h-8 fill-dark" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                                Play
+                                Watch Now
+                                <span className="group-hover:translate-x-1 transition-transform">→</span>
                             </button>
                             <button
                                 onClick={() => handleSelectAnime(heroAnime)}
-                                className="bg-white/20 backdrop-blur-xl text-white px-10 py-4 rounded-md font-black flex items-center gap-3 hover:bg-white/30 transition-all shadow-2xl text-xl border border-white/10"
+                                className="btn-modern btn-secondary-modern text-lg px-12 py-4"
                             >
-                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                More Info
+                                Full Details
                             </button>
                         </div>
                     </div>
 
-                    {/* Navigation/Search Overlay */}
-                    <div className="absolute top-28 left-0 right-0 px-6 md:px-12 z-50">
-                        <div className="max-w-4xl mx-auto">
+                    {/* Search Overlay - Modern Floating HUD */}
+                    <div className="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+                        <div className="glass-modern rounded-3xl p-2 shadow-2xl border-white/5">
                             <RealTimeSearch onSelect={handleSelectAnime} />
                         </div>
                     </div>
                 </section>
             )}
 
-            {/* Content Rows */}
-            <div className="md:-mt-24 relative z-20 pb-20 pl-6 md:pl-12 space-y-12">
-                <AnimeRow title="Trending Hits" animeList={trending} onSelect={handleSelectAnime} />
-                <AnimeRow title="Most Popular" animeList={popular} onSelect={handleSelectAnime} />
-                <AnimeRow title="Top Rated for You" animeList={topRated} onSelect={handleSelectAnime} />
-                <AnimeRow title="Action Packed" animeList={actionAnime} onSelect={handleSelectAnime} />
+            {/* Content Rails */}
+            <div className="container mx-auto px-6 -mt-32 relative z-20 space-y-24 pb-24">
+                <AnimeRow title="TRENDING HITS" animeList={trending} onSelect={handleSelectAnime} />
+                <AnimeRow title="POPULAR SELECTIONS" animeList={popular} onSelect={handleSelectAnime} />
+                <AnimeRow title="CRITICS CHOICE" animeList={topRated} onSelect={handleSelectAnime} />
             </div>
         </div>
     );
@@ -142,81 +135,79 @@ function AnimeRow({ title, animeList, onSelect }) {
     };
 
     return (
-        <section className="space-y-4 group">
-            <h2 className="text-xl md:text-2xl font-black text-white/90 tracking-tight flex items-center gap-2 group-hover:text-white transition-colors">
-                {title}
-                <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
-            </h2>
-
-            <div className="relative">
-                {/* Scroll Buttons */}
-                <button
-                    onClick={() => scroll('left')}
-                    className="absolute left-0 top-0 bottom-0 w-12 z-30 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 flex items-center justify-center -ml-12 md:-ml-12"
-                >
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
-                </button>
-
-                <div
-                    ref={rowRef}
-                    className="flex gap-2 md:gap-3 overflow-x-auto hide-scrollbar scroll-smooth pr-10"
-                >
-                    {animeList.map((anime) => (
-                        <NetflixCard key={anime.malId} anime={anime} onClick={() => onSelect(anime)} />
-                    ))}
+        <section className="space-y-8 watch-fade-in">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black tracking-tighter italic flex items-center gap-4">
+                    {title}
+                    <div className="h-[2px] w-12 bg-pink-500"></div>
+                </h2>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={() => scroll('left')}
+                        className="glass-card-modern w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                    >
+                        ←
+                    </button>
+                    <button 
+                        onClick={() => scroll('right')}
+                        className="glass-card-modern w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                    >
+                        →
+                    </button>
                 </div>
+            </div>
 
-                <button
-                    onClick={() => scroll('right')}
-                    className="absolute right-0 top-0 bottom-0 w-12 z-30 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 flex items-center justify-center"
-                >
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
-                </button>
+            <div
+                ref={rowRef}
+                className="flex gap-6 overflow-x-auto hide-scrollbar scroll-smooth pr-12 pb-4"
+            >
+                {animeList.map((anime) => (
+                    <ModernAnimeCard key={anime.malId} anime={anime} onClick={() => onSelect(anime)} />
+                ))}
             </div>
         </section>
     );
 }
 
-function NetflixCard({ anime, onClick }) {
+function ModernAnimeCard({ anime, onClick }) {
     const imageUrl = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
 
     return (
         <div
             onClick={onClick}
-            className="flex-none w-[160px] md:w-[240px] aspect-[16/9] md:aspect-[16/9] relative bg-white/5 rounded-sm overflow-hidden transition-all duration-300 cursor-pointer hover:z-50 hover:scale-125 hover:shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
+            className="flex-none w-[200px] md:w-[300px] group cursor-pointer"
         >
-            <img
-                src={imageUrl}
-                alt={anime.title}
-                className="w-full h-full object-cover rounded-sm"
-            />
-
-            {/* Hover Reveal Details */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
-                <div className="space-y-1">
-                    <h3 className="font-bold text-white text-[10px] md:text-sm leading-tight drop-shadow-lg">
-                        {anime.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-[8px] font-black text-green-400">
-                        <span>{Math.round((anime.score || 8.5) * 10)}% Match</span>
-                        <span className="text-white border border-white/40 px-1 py-0 rounded-[2px]">{anime.year || 2023}</span>
+            <div className="aspect-[16/9] relative glass-card-modern rounded-2xl overflow-hidden mb-4 border-white/5 group-hover:border-pink-500/30 transition-all shadow-xl">
+                <img
+                    src={imageUrl}
+                    alt={anime.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
+                    <div className="flex items-center gap-2 text-[8px] font-black text-pink-500 uppercase tracking-widest mb-1">
+                        <span>{Math.round((anime.score || 8.5) * 10)}% Affinity</span>
                     </div>
+                    <h3 className="font-bold text-white text-xs md:text-sm leading-tight line-clamp-2">
+                        {anime.title.toUpperCase()}
+                    </h3>
+                </div>
+                
+                {/* Score badge */}
+                <div className="absolute top-4 right-4 glass-modern px-2 py-1 rounded-lg text-[10px] font-black text-white/80 border-white/10 group-hover:border-pink-500/30 transition-all">
+                    {anime.score || 'N/A'}
+                </div>
+            </div>
+            
+            <div className="px-2">
+                <h4 className="font-bold text-xs tracking-tight mb-1 truncate text-white/80 group-hover:text-white transition-colors">
+                    {anime.title}
+                </h4>
+                <div className="flex items-center gap-3 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+                    <span>{anime.type}</span>
+                    <span>•</span>
+                    <span>{anime.year || '2023'}</span>
                 </div>
             </div>
         </div>
     );
 }
-
-function AnimeRowSkeleton() {
-    return (
-        <div className="space-y-4">
-            <div className="h-8 w-48 bg-white/5 rounded-md animate-pulse"></div>
-            <div className="flex gap-3 overflow-hidden">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                    <div key={i} className="flex-none w-[240px] aspect-[16/9] bg-white/5 rounded-sm animate-pulse"></div>
-                ))}
-            </div>
-        </div>
-    );
-}
-

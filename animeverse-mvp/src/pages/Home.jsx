@@ -1,227 +1,230 @@
-import React, { Suspense, useRef, useState, useEffect } from 'react'
+import React, { Suspense, useRef, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Float, MeshDistortMaterial } from '@react-three/drei'
+import gsap from 'gsap'
 import ScenePortal from '../components/ScenePortal'
 
 export default function Home({ onEnter }) {
-  const sceneRef = useRef()
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const containerRef = useRef()
+  const heroRef = useRef()
+  const bentoRef = useRef()
 
-  // Track mouse for parallax effect
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20
+    const ctx = gsap.context(() => {
+      // Hero entrance
+      gsap.from('.hero-content > *', {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power4.out'
       })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+
+      // Bento items stagger
+      gsap.from('.bento-item', {
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'back.out(1.7)',
+        scrollTrigger: {
+          trigger: bentoRef.current,
+          start: 'top 80%'
+        }
+      })
+    }, containerRef)
+
+    return () => ctx.revert()
   }, [])
 
   const features = [
     {
+      id: 1,
+      title: 'Cinematic Streaming',
+      desc: 'High-definition anime library with zero ads and instant playback.',
       icon: '🎬',
-      title: 'Watch Anime',
-      description: 'Stream thousands of anime episodes with high quality',
-      gradient: 'from-pink-500 to-rose-500'
+      class: 'bento-item-1',
+      gradient: 'from-[#ff0055] to-[#7000ff]'
     },
     {
+      id: 2,
+      title: '3D Character Hub',
+      desc: 'Interact with your favorite characters in full 3D.',
       icon: '🖼️',
-      title: '3D Gallery',
-      description: 'Explore iconic characters in stunning 3D models',
-      gradient: 'from-purple-500 to-indigo-500'
+      class: 'bento-item-2',
+      gradient: 'from-[#7000ff] to-[#00d4ff]'
     },
     {
+      id: 3,
+      title: 'VR Museum',
+      desc: 'First-person history tour.',
       icon: '🏛️',
-      title: 'Virtual Museum',
-      description: 'Walk through anime history in first-person view',
-      gradient: 'from-blue-500 to-cyan-500'
+      class: 'bento-item-3',
+      gradient: 'from-[#00d4ff] to-[#00ffa3]'
     },
     {
+      id: 4,
+      title: 'Epic Timeline',
+      desc: 'Visual journey of anime evolution.',
       icon: '📅',
-      title: 'Timeline',
-      description: 'Journey through decades of animation evolution',
-      gradient: 'from-emerald-500 to-teal-500'
+      class: 'bento-item-4',
+      gradient: 'from-[#ff0055] to-[#ffa300]'
     }
   ]
 
   return (
-    <div className="relative min-h-screen overflow-hidden aurora-bg cyber-grid">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Gradient Orbs with Glow */}
-        <div
-          className="absolute -top-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob glow-pink fluid-morph"
-          style={{ transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)` }}
-        ></div>
-        <div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 glow-purple fluid-morph"
-          style={{ transform: `translate(${-mousePosition.x}px, ${mousePosition.y}px)` }}
-        ></div>
-        <div
-          className="absolute -bottom-40 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000 glow-blue fluid-morph"
-          style={{ transform: `translate(${mousePosition.x}px, ${-mousePosition.y}px)` }}
-        ></div>
-
-        {/* Mesh Gradient Overlay */}
-        <div className="absolute inset-0 mesh-gradient opacity-30"></div>
+    <div ref={containerRef} className="relative min-h-screen mesh-gradient-modern selection:bg-pink-500/30">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-500/10 blur-[120px] rounded-full animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-pulse delay-700"></div>
       </div>
 
-      {/* Content */}
       <div className="relative z-10">
-        {/* Hero Section */}
-        <header className="container mx-auto px-6 pt-32 pb-20 text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card-3d holographic glow-pink mb-8 animate-fade-in float-slow">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
-            </span>
-            <span className="text-sm text-white/90 font-medium">Now Live - Stream Your Favorite Anime</span>
+        {/* Floating Navbar (Static for now) */}
+        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
+          <div className="container mx-auto flex justify-between items-center glass-modern px-8 py-4 rounded-2xl">
+            <div className="text-2xl font-black tracking-tighter italic">
+              ANIME<span className="text-pink-500 underline decoration-2 underline-offset-4">VERSE</span>
+            </div>
+            <div className="hidden md:flex gap-8 text-sm font-semibold text-white/70">
+              <a href="#" className="hover:text-white transition-colors">Museum</a>
+              <a href="#" className="hover:text-white transition-colors">Streaming</a>
+              <a href="#" className="hover:text-white transition-colors">Timeline</a>
+              <a href="#" className="hover:text-white transition-colors">Gallery</a>
+            </div>
+            <button 
+              onClick={() => onEnter && onEnter()}
+              className="btn-modern btn-primary-modern py-2 px-6 text-sm"
+            >
+              Get Started
+            </button>
           </div>
+        </nav>
 
-          {/* Main Title */}
-          <h1 className="text-7xl md:text-8xl font-black tracking-tight mb-6 animate-fade-in-up">
-            <span className="inline-block bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent animate-gradient-x">
-              ANIMEVERSE
-            </span>
+        {/* Hero Section */}
+        <section ref={heroRef} className="container mx-auto px-6 pt-48 pb-20 text-center hero-content">
+          <div className="inline-block px-4 py-1.5 glass-card-modern rounded-full text-xs font-bold tracking-widest uppercase mb-8 border-pink-500/30 text-pink-400">
+            Evolution of Immersion
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-black leading-[0.9] mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+            EXPERIENCE THE<br />FUTURE OF ANIME
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white/70 mb-4 max-w-3xl mx-auto font-light animate-fade-in-up animation-delay-200">
-            Explore the Evolution of Anime & Manga in Immersive 3D
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/50 mb-12 font-medium leading-relaxed">
+            The world's first immersive anime ecosystem. Stream, explore, and interact with the 
+            history of animation in stunning 3D.
           </p>
 
-          <p className="text-base text-white/50 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-400">
-            Journey through decades of animation history, view iconic characters in stunning 3D,
-            stream your favorite shows, and discover the art that shaped global pop culture.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up animation-delay-600">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <button
               onClick={() => {
                 if (onEnter) onEnter()
-                const evt = new CustomEvent('enterMuseum')
-                window.dispatchEvent(evt)
+                window.dispatchEvent(new CustomEvent('enterMuseum'))
               }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-bold text-white neon-border glow-pink magnetic-button ripple overflow-hidden"
+              className="btn-modern btn-primary-modern text-lg px-10 py-4 group"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                Enter the Museum
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              Enter the Metaverse
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </button>
-
             <button
               onClick={() => onEnter && onEnter()}
-              className="px-8 py-4 glass-card-3d holographic rounded-full font-semibold text-white magnetic-button ripple"
+              className="btn-modern btn-secondary-modern text-lg px-10 py-4"
             >
               Explore Features
             </button>
           </div>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 mt-16 animate-fade-in-up animation-delay-800">
-            <div className="text-center glass-card-3d p-4 rounded-xl glow-pink float-slow">
-              <div className="text-3xl font-bold text-white mb-1">10,000+</div>
-              <div className="text-sm text-white/60">Anime Episodes</div>
-            </div>
-            <div className="text-center glass-card-3d p-4 rounded-xl glow-purple float-medium">
-              <div className="text-3xl font-bold text-white mb-1">500+</div>
-              <div className="text-sm text-white/60">3D Characters</div>
-            </div>
-            <div className="text-center glass-card-3d p-4 rounded-xl glow-blue float-fast">
-              <div className="text-3xl font-bold text-white mb-1">50+</div>
-              <div className="text-sm text-white/60">Years of History</div>
+          {/* Scrolling Down Indicator */}
+          <div className="mt-24 animate-bounce opacity-30">
+            <div className="w-6 h-10 border-2 border-white rounded-full mx-auto relative">
+              <div className="w-1 h-2 bg-white rounded-full absolute top-2 left-1/2 -translate-x-1/2"></div>
             </div>
           </div>
-        </header>
+        </section>
 
-        {/* Features Grid */}
-        <section className="container mx-auto px-6 py-20">
-          <h2 className="text-4xl font-bold text-center text-white mb-4">
-            Explore Our Features
-          </h2>
-          <p className="text-center text-white/60 mb-12 max-w-2xl mx-auto">
-            Immerse yourself in the world of anime with our cutting-edge platform
-          </p>
+        {/* Bento Grid Section */}
+        <section ref={bentoRef} className="container mx-auto px-6 py-24">
+          <div className="mb-16">
+            <h2 className="text-4xl font-black mb-4 tracking-tighter">OUR ECOSYSTEM</h2>
+            <div className="h-1 w-20 bg-pink-500"></div>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group card-3d perspective-1000 preserve-3d glass-card-3d holographic p-6 rounded-2xl cursor-pointer animate-fade-in-up"
-                style={{ animationDelay: `${index * 100}ms` }}
+          <div className="bento-grid">
+            {features.map((f) => (
+              <div 
+                key={f.id} 
+                className={`bento-item glass-card-modern group cursor-pointer ${f.class}`}
+                onClick={() => onEnter && onEnter()}
               >
-                {/* Gradient Background on Hover */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
-
-                {/* Icon */}
-                <div className="relative text-5xl mb-4 transform group-hover:scale-110 transition-transform">
-                  {feature.icon}
-                </div>
-
-                {/* Content */}
-                <h3 className="relative text-xl font-bold text-white mb-2">
-                  {feature.title}
-                </h3>
-                <p className="relative text-white/60 text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Arrow */}
-                <div className="relative mt-4 flex items-center text-white/40 group-hover:text-white/80 transition-colors">
-                  <span className="text-sm font-medium mr-2">Explore</span>
-                  <svg className="w-4 h-4 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                <div className="p-8 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform origin-left">{f.icon}</div>
+                    <h3 className="text-2xl font-bold mb-2 tracking-tight">{f.title}</h3>
+                    <p className="text-white/50 text-sm leading-relaxed max-w-[250px]">{f.desc}</p>
+                  </div>
+                  <div className="flex items-center text-xs font-bold tracking-widest text-white/30 group-hover:text-pink-400 transition-colors">
+                    LEARN MORE <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 3D Scene Preview */}
-        <section className="container mx-auto px-6 py-20">
-          <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-black/20 backdrop-blur-md shadow-2xl h-96">
-            <Canvas shadows camera={{ position: [0, 1.5, 5], fov: 50 }}>
-              <ambientLight intensity={0.6} />
-              <directionalLight position={[5, 5, 5]} intensity={0.8} />
-              <Suspense fallback={null}>
-                <ScenePortal ref={sceneRef} />
-              </Suspense>
-              <OrbitControls enablePan={false} />
-            </Canvas>
+        {/* Immersive Preview */}
+        <section className="container mx-auto px-6 py-24">
+          <div className="glass-modern rounded-[3rem] p-4 h-[600px] relative overflow-hidden group">
+            <div className="absolute inset-0 z-0">
+              <Canvas shadows camera={{ position: [0, 1.5, 5], fov: 50 }}>
+                <ambientLight intensity={0.8} />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+                <Suspense fallback={null}>
+                  <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                    <ScenePortal />
+                  </Float>
+                </Suspense>
+                <OrbitControls enableZoom={false} enablePan={false} />
+              </Canvas>
+            </div>
+            
+            <div className="absolute top-12 left-12 z-10 max-w-sm pointer-events-none">
+              <div className="glass-card-modern p-6 rounded-2xl border-white/10 backdrop-blur-3xl">
+                <h3 className="text-2xl font-black mb-2 italic">INTERACTIVE CORE</h3>
+                <p className="text-sm text-white/50">Experience the world's first interactive anime portal. Drag to rotate the character view.</p>
+              </div>
+            </div>
 
-            {/* Overlay Label */}
-            <div className="absolute bottom-6 left-6 px-4 py-2 rounded-lg bg-black/60 backdrop-blur-md border border-white/20">
-              <p className="text-white text-sm font-medium">Interactive 3D Preview - Drag to rotate</p>
+            <div className="absolute bottom-12 right-12 z-10 pointer-events-none">
+              <div className="flex gap-4">
+                <div className="glass-card-modern p-4 rounded-xl text-center min-w-[100px]">
+                  <div className="text-xl font-black text-pink-500">4K</div>
+                  <div className="text-[10px] uppercase font-bold text-white/30">Resolution</div>
+                </div>
+                <div className="glass-card-modern p-4 rounded-xl text-center min-w-[100px]">
+                  <div className="text-xl font-black text-purple-500">60FPS</div>
+                  <div className="text-[10px] uppercase font-bold text-white/30">Refresh Rate</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Footer CTA */}
-        <section className="container mx-auto px-6 py-20 text-center">
-          <div className="max-w-3xl mx-auto p-12 rounded-3xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 backdrop-blur-md border border-white/10">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="text-white/70 mb-8">
-              Join thousands of anime fans exploring our immersive platform
-            </p>
-            <button
-              onClick={() => onEnter && onEnter()}
-              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-bold text-white shadow-2xl shadow-pink-500/50 hover:shadow-pink-500/80 transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              Get Started Now
-            </button>
+        {/* Footer */}
+        <footer className="container mx-auto px-6 py-20 border-t border-white/5">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="text-xl font-black italic">ANIMEVERSE</div>
+            <div className="flex gap-12 text-sm text-white/40">
+              <a href="#" className="hover:text-white transition-colors">Terms</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white transition-colors">Discord</a>
+              <a href="#" className="hover:text-white transition-colors">Twitter</a>
+            </div>
+            <div className="text-xs font-medium text-white/20">© 2025 ANIMEVERSE MVP. PROJECT REBORN.</div>
           </div>
-        </section>
+        </footer>
       </div>
     </div>
   )
