@@ -48,6 +48,20 @@ app.get('/health', (req, res) => {
     });
 });
 
+// Root route redirect for better UX
+app.get('/', (req, res) => {
+    res.send(`
+        <div style="font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #050505; color: white;">
+            <h1 style="color: #ff00ff;">AnimeVerse API Server</h1>
+            <p>The backend is running successfully on port ${PORT}.</p>
+            <p>Please visit the frontend at: <a href="http://localhost:5173" style="color: #00ffff; text-decoration: none; font-weight: bold;">http://localhost:5173</a></p>
+            <div style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333;">
+                <code style="color: #aaa;">Status: ${providerReady ? '✅ Ready' : '🔄 Initializing...'}</code>
+            </div>
+        </div>
+    `);
+});
+
 // Search Anime
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
