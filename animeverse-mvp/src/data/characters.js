@@ -2,19 +2,50 @@
 export const characters = [
     {
         id: 'hero',
-        name: 'Hero Character',
-        malId: null, // Generic character
+        name: 'Vanguard Alpha',
+        malId: null,
         animeTitle: 'Original',
-        description: 'The main protagonist of the series.',
+        description: 'The core neural framework of the AnimeVerse ecosystem. A versatile archetype capable of adapting to any combat scenario.',
         modelUrl: '/models/hero.glb',
-        thumbnailUrl: ''
+        thumbnailUrl: '',
+        role: 'Protagonist'
+    },
+    {
+        id: 'gojo-satoru',
+        name: 'Gojo Satoru',
+        malId: 40747,
+        animeTitle: 'Jujutsu Kaisen',
+        description: 'The strongest jujutsu sorcerer. His "Limitless" technique allows him to manipulate space at an atomic level.',
+        modelUrl: 'https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb', // Placeholder style
+        thumbnailUrl: '',
+        role: 'Teacher/Special Grade Sorcerer'
+    },
+    {
+        id: 'tanjiro-kamado',
+        name: 'Tanjiro Kamado',
+        malId: 38000,
+        animeTitle: 'Demon Slayer',
+        description: 'A kind-hearted boy who becomes a demon slayer to save his sister and avenge his family.',
+        modelUrl: 'https://models.readyplayer.me/6478e1e6815f0fe5e6e94ce2.glb', // Placeholder style
+        thumbnailUrl: '',
+        role: 'Demon Slayer'
+    },
+    {
+        id: 'mikasa-ackerman',
+        name: 'Mikasa Ackerman',
+        malId: 16499,
+        animeTitle: 'Attack on Titan',
+        description: 'A top-ranked soldier in the Survey Corps with extraordinary combat skills and unwavering loyalty.',
+        modelUrl: 'https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb', // Placeholder style
+        thumbnailUrl: '',
+        role: 'Soldier'
     },
     {
         id: 'goku-style',
-        name: 'Goku',
-        malId: 813, // Dragon Ball Z MAL ID
+        name: 'Son Goku',
+        malId: 813,
         animeTitle: 'Dragon Ball Z',
-        description: 'Legendary Super Saiyan warrior with incredible power.',
+        description: 'The legendary Saiyan who has saved Earth countless times. His power grows with every battle.',
         modelUrl: 'https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb',
         thumbnailUrl: '',
         role: 'Protagonist'
@@ -22,9 +53,9 @@ export const characters = [
     {
         id: 'naruto-style',
         name: 'Naruto Uzumaki',
-        malId: 20, // Naruto MAL ID
+        malId: 20,
         animeTitle: 'Naruto',
-        description: 'Aspiring Hokage with the Nine-Tailed Fox spirit.',
+        description: 'A ninja who dreams of becoming Hokage. He carries the spirit of the Nine-Tailed Fox within him.',
         modelUrl: 'https://models.readyplayer.me/6478e1e6815f0fe5e6e94ce2.glb',
         thumbnailUrl: '',
         role: 'Protagonist'
@@ -32,51 +63,41 @@ export const characters = [
     {
         id: 'luffy-style',
         name: 'Monkey D. Luffy',
-        malId: 21, // One Piece MAL ID
+        malId: 21,
         animeTitle: 'One Piece',
-        description: 'Rubber-powered pirate captain seeking One Piece.',
+        description: 'Captain of the Straw Hat Pirates. He ate the Gum-Gum Fruit, giving him the properties of rubber.',
         modelUrl: 'https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb',
         thumbnailUrl: '',
         role: 'Protagonist'
     },
     {
-        id: 'samurai-hero',
-        name: 'Samurai Warrior',
-        malId: 269, // Bleach MAL ID (as an example)
-        animeTitle: 'Bleach',
-        description: 'Traditional samurai with honor and discipline.',
+        id: 'ken-kaneki',
+        name: 'Ken Kaneki',
+        malId: 14893,
+        animeTitle: 'Tokyo Ghoul',
+        description: 'A college student who becomes a half-ghoul after a tragic encounter. He struggles to balance his two natures.',
         modelUrl: 'https://models.readyplayer.me/647a1234815f0fe5e6e95abc.glb',
         thumbnailUrl: '',
-        role: 'Warrior'
+        role: 'Protagonist'
     },
     {
-        id: 'cyberpunk-hero',
-        name: 'Cyberpunk Hero',
-        malId: 457, // Mushishi (cyberpunk aesthetic)
-        animeTitle: 'Cyberpunk Anime',
-        description: 'Futuristic anime character from Neo-Tokyo.',
+        id: 'sasuke-uchiha',
+        name: 'Sasuke Uchiha',
+        malId: 13,
+        animeTitle: 'Naruto',
+        description: 'The last surviving member of the Uchiha clan. A prodigy driven by a desire for power and vengeance.',
         modelUrl: 'https://models.readyplayer.me/648b5678c5b05779c6587def.glb',
         thumbnailUrl: '',
-        role: 'Protagonist'
+        role: 'Rival/Protagonist'
     },
     {
-        id: 'magical-girl',
-        name: 'Magical Girl',
-        malId: 530, // Sailor Moon MAL ID
-        animeTitle: 'Sailor Moon',
-        description: 'Magical anime heroine with special powers.',
+        id: 'zenitsu-agatsuma',
+        name: 'Zenitsu Agatsuma',
+        malId: 38334,
+        animeTitle: 'Demon Slayer',
+        description: 'A demon slayer with a cowardly personality who becomes incredibly powerful when he loses consciousness.',
         modelUrl: 'https://models.readyplayer.me/649c7890815f0fe5e6e96fed.glb',
         thumbnailUrl: '',
-        role: 'Protagonist'
-    },
-    {
-        id: 'mecha-pilot',
-        name: 'Mecha Pilot',
-        malId: 30, // Neon Genesis Evangelion MAL ID
-        animeTitle: 'Neon Genesis Evangelion',
-        description: 'Elite robot pilot from a futuristic anime.',
-        modelUrl: 'https://models.readyplayer.me/64ad9012c5b05779c6598cba.glb',
-        thumbnailUrl: '',
-        role: 'Pilot'
+        role: 'Demon Slayer'
     }
 ];

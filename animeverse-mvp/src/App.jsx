@@ -97,7 +97,7 @@ export default function App() {
           <div className="hidden md:flex items-center gap-8">
             {[
               { id: 'home', label: 'Home' },
-              { id: 'gallery', label: 'Gallery' },
+                { id: 'gallery', label: 'Models' },
               { id: 'watch-anime', label: 'Cinema' },
               { id: 'museum', label: 'Museum' },
 { id: 'timeline', label: 'Timeline' },
