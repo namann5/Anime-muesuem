@@ -158,11 +158,11 @@ export default function App() {
               <Museum animeFilter={animeId} />
             </PageTransition>
           )}
-          {route === 'timeline' && (
-            <PageTransition key="timeline">
-              <AnimeTimeline />
-            </PageTransition>
-          )}
+            {route === 'timeline' && (
+              <PageTransition key="timeline">
+                <AnimeTimeline onNavigate={navigateTo} />
+              </PageTransition>
+            )}
         </Suspense>
       </main>
     </div>
