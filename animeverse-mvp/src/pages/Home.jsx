@@ -80,29 +80,8 @@ export default function Home({ onEnter }) {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full animate-pulse delay-700"></div>
       </div>
 
-      <div className="relative z-10">
-        {/* Floating Navbar (Static for now) */}
-        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
-          <div className="container mx-auto flex justify-between items-center glass-modern px-8 py-4 rounded-2xl">
-            <div className="text-2xl font-black tracking-tighter italic">
-              ANIME<span className="text-pink-500 underline decoration-2 underline-offset-4">VERSE</span>
-            </div>
-            <div className="hidden md:flex gap-8 text-sm font-semibold text-white/70">
-              <a href="#" className="hover:text-white transition-colors">Museum</a>
-              <a href="#" className="hover:text-white transition-colors">Streaming</a>
-              <a href="#" className="hover:text-white transition-colors">Timeline</a>
-              <a href="#" className="hover:text-white transition-colors">Gallery</a>
-            </div>
-            <button 
-              onClick={() => onEnter && onEnter()}
-              className="btn-modern btn-primary-modern py-2 px-6 text-sm"
-            >
-              Get Started
-            </button>
-          </div>
-        </nav>
-
-        {/* Hero Section */}
+        <div className="relative z-10">
+          {/* Hero Section */}
         <section ref={heroRef} className="container mx-auto px-6 pt-48 pb-20 text-center hero-content">
           <div className="inline-block px-4 py-1.5 glass-card-modern rounded-full text-xs font-bold tracking-widest uppercase mb-8 border-pink-500/30 text-pink-400">
             Evolution of Immersion

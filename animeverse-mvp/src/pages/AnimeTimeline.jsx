@@ -94,8 +94,8 @@ function AnimeTimeline() {
             {/* Mesh Gradient Overlay */}
             <div className="absolute inset-0 mesh-gradient opacity-20 pointer-events-none"></div>
 
-            {/* Scroll Progress Bar */}
-            <div className="fixed top-0 left-0 right-0 h-1 bg-white/10 z-50">
+            {/* Scroll Progress Bar - Moved to bottom for cleaner HUD */}
+            <div className="fixed bottom-0 left-0 right-0 h-1 bg-white/10 z-50">
                 <div
                     className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 transition-all duration-300"
                     style={{ width: `${scrollProgress}%` }}
