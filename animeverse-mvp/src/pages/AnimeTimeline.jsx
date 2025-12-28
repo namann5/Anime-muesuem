@@ -75,7 +75,10 @@ function AnimeTimeline() {
     };
 
     return (
-        <div className="min-h-screen aurora-bg cyber-grid relative overflow-hidden">
+        <div 
+            className="min-h-screen aurora-bg cyber-grid relative bg-[#050505]"
+            style={{ backgroundAttachment: 'fixed' }}
+        >
             {/* Animated Particles */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 {particles.map(particle => (

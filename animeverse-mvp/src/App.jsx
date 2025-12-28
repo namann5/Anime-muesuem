@@ -131,7 +131,7 @@ export default function App() {
       </nav>
 
       {/* Page rendering with transitions and suspense */}
-      <main className="w-full min-h-screen">
+        <main className="w-full min-h-screen bg-anime-dark">
         <Suspense fallback={<PageLoader />}>
           {route === 'home' && (
             <PageTransition key="home">
