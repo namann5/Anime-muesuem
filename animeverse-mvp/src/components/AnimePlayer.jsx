@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { getStreamingLinks } from '../api/streamingApi';
+import HLSPlayer from './HLSPlayer';
 
 export default function AnimePlayer({
     episodeId,
@@ -10,7 +12,10 @@ export default function AnimePlayer({
     hasPrevious
 }) {
     const [loading, setLoading] = useState(true);
-    const [playerUrl, setPlayerUrl] = useState('');
+    const [playerType, setPlayerType] = useState('hls'); // 'hls' or 'iframe'
+    const [streamUrl, setStreamUrl] = useState('');
+    const [iframeUrl, setIframeUrl] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!episodeId) return;
@@ -19,17 +24,39 @@ export default function AnimePlayer({
 
     async function loadEpisode() {
         setLoading(true);
+        setError(null);
 
-        // AnimePahe uses iframe embeds
-        // The episode ID from AnimePahe is in format like: "naruto/episode-1"
-        // We'll use AnimePahe's embed URL
-        const embedUrl = `https://animepahe.com/play/${episodeId}`;
+        try {
+            // 1. Set fallback iframe URL
+            const embedUrl = `https://animepahe.com/play/${episodeId}`;
+            setIframeUrl(embedUrl);
 
-        console.log('Loading AnimePahe player:', embedUrl);
-        setPlayerUrl(embedUrl);
-
-        // Quick load - no delays
-        setTimeout(() => setLoading(false), 500);
+            // 2. Try to get HLS streaming links from backend
+            const data = await getStreamingLinks(episodeId);
+            
+            if (data.sources && data.sources.length > 0) {
+                // Use the highest quality source (usually the last or specifically marked)
+                // For AnimePahe, 720p/1080p is preferred.
+                const bestSource = data.sources.find(s => s.quality.includes('1080')) || 
+                                   data.sources.find(s => s.quality.includes('720')) || 
+                                   data.sources[0];
+                
+                // Use proxy to bypass potential CORS/Referer issues
+                // BACKEND_URL in streamingApi.js is http://localhost:3001/api
+                const backendBase = 'http://localhost:3001/api';
+                const proxiedUrl = `${backendBase}/proxy?url=${encodeURIComponent(bestSource.url)}`;
+                
+                setStreamUrl(proxiedUrl);
+                setPlayerType('hls');
+            } else {
+                setPlayerType('iframe');
+            }
+        } catch (err) {
+            console.error('Failed to load stream:', err);
+            setPlayerType('iframe');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -40,28 +67,24 @@ export default function AnimePlayer({
                     <div className="absolute inset-0 flex items-center justify-center bg-anime-dark z-20">
                         <div className="flex flex-col items-center gap-4 max-w-md px-6">
                             <div className="w-12 h-12 border-4 border-anime-pink/20 border-t-anime-pink rounded-full animate-spin"></div>
-                            <span className="text-white/40 text-xs font-bold tracking-widest uppercase animate-pulse">Loading Player</span>
-                            <div className="text-center mt-2">
-                                <p className="text-white/60 text-xs">
-                                    🔒 <span className="text-yellow-400">Security check in progress...</span>
-                                </p>
-                                <p className="text-white/40 text-[10px] mt-1">
-                                    This may take 5-10 seconds on first load
-                                </p>
-                            </div>
+                            <span className="text-white/40 text-xs font-bold tracking-widest uppercase animate-pulse">Initializing {playerType.toUpperCase()} Player</span>
                         </div>
                     </div>
                 )}
 
-                <iframe
-                    src={playerUrl}
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
-                    title={`${animeTitle} - Episode ${episodeNumber}`}
-                    onLoad={() => setLoading(false)}
-                />
+                {playerType === 'hls' && streamUrl ? (
+                    <HLSPlayer src={streamUrl} autoPlay={true} />
+                ) : (
+                    <iframe
+                        src={iframeUrl}
+                        className="w-full h-full border-0"
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                        title={`${animeTitle} - Episode ${episodeNumber}`}
+                        onLoad={() => setLoading(false)}
+                    />
+                )}
             </div>
 
             {/* Episode Info & Controls */}
@@ -70,10 +93,21 @@ export default function AnimePlayer({
                     <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Now Watching</span>
                     <div className="text-white font-black text-xl flex items-center gap-2">
                         Episode <span className="text-anime-pink">{episodeNumber}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/60 ml-2 font-normal">
+                            {playerType === 'hls' ? 'AD-FREE HLS' : 'EXTERNAL IFRAME'}
+                        </span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setPlayerType(playerType === 'hls' ? 'iframe' : 'hls')}
+                        className="p-2.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 text-white/60 hover:text-white transition-all text-[10px] font-bold"
+                        title="Switch Player Type"
+                    >
+                        {playerType === 'hls' ? 'USE IFRAME' : 'USE HLS'}
+                    </button>
+
                     <button
                         onClick={onPrevious}
                         disabled={!hasPrevious}
@@ -91,14 +125,6 @@ export default function AnimePlayer({
                         Next
                         <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
                     </button>
-
-                    <button
-                        onClick={loadEpisode}
-                        className="p-2.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 text-white/60 hover:text-white transition-all"
-                        title="Reload Player"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    </button>
                 </div>
             </div>
 
@@ -111,10 +137,11 @@ export default function AnimePlayer({
                         </svg>
                     </div>
                     <div className="flex-1">
-                        <h4 className="text-white font-bold text-sm mb-1">🎬 Streaming via AnimePahe</h4>
+                        <h4 className="text-white font-bold text-sm mb-1">🎬 {playerType === 'hls' ? 'Streaming ad-free with HLS' : 'Streaming via AnimePahe Embed'}</h4>
                         <p className="text-white/60 text-xs leading-relaxed">
-                            <span className="text-yellow-400 font-semibold">⏳ First load may take 5-10 seconds</span> due to security checks.
-                            Subsequent episodes load faster. Use fullscreen for the best experience!
+                            {playerType === 'hls' 
+                                ? "Enjoy a clean viewing experience without ads. If the player doesn't load, try switching to 'USE IFRAME'."
+                                : "If you encounter ads, we recommend using an ad-blocker. Switch to 'USE HLS' for an ad-free experience."}
                         </p>
                     </div>
                 </div>
