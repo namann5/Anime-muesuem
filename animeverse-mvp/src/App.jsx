@@ -8,6 +8,7 @@ const AnimeTimeline = React.lazy(() => import('./pages/AnimeTimeline'))
 const Museum = React.lazy(() => import('./pages/Museum'))
 const WatchAnime = React.lazy(() => import('./pages/WatchAnime'))
 const AnimeDetail = React.lazy(() => import('./pages/AnimeDetail'))
+const Support = React.lazy(() => import('./pages/Support'))
 
 // Loading Spinner for Suspense
 function PageLoader() {
@@ -99,8 +100,9 @@ export default function App() {
               { id: 'gallery', label: 'Gallery' },
               { id: 'watch-anime', label: 'Cinema' },
               { id: 'museum', label: 'Museum' },
-              { id: 'timeline', label: 'Timeline' }
-            ].map((item) => (
+{ id: 'timeline', label: 'Timeline' },
+                { id: 'support', label: 'Support' }
+              ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => item.id === 'gallery' ? handleGalleryClick() : navigateTo(item.id)}
@@ -158,11 +160,16 @@ export default function App() {
               <Museum animeFilter={animeId} />
             </PageTransition>
           )}
-          {route === 'timeline' && (
-            <PageTransition key="timeline">
-              <AnimeTimeline />
-            </PageTransition>
-          )}
+{route === 'timeline' && (
+              <PageTransition key="timeline">
+                <AnimeTimeline />
+              </PageTransition>
+            )}
+            {route === 'support' && (
+              <PageTransition key="support">
+                <Support />
+              </PageTransition>
+            )}
         </Suspense>
       </main>
     </div>
