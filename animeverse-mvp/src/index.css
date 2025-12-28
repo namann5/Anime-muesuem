@@ -1,5 +1,6 @@
 @import './styles/futuristic-ui.css';
 @import './styles/unicorn-studio.css';
+@import './styles/timeline.css';
 
 @tailwind base;
 @tailwind components;

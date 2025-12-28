@@ -38,7 +38,7 @@ function AnimeTimeline() {
         ghibli: {
             primary: '#10b981', // Nature Green for Ghibli
             secondary: '#34d399',
-            glow: 'glow-blue', // Or maybe a nature glow? Keep blue for now or switch to green
+            glow: 'glow-blue',
             gradient: 'from-emerald-500 to-teal-500'
         },
         action: {
@@ -52,6 +52,18 @@ function AnimeTimeline() {
             secondary: '#f87171',
             glow: 'glow-purple',
             gradient: 'from-red-600 to-rose-900'
+        },
+        neon: {
+            primary: '#00f2ff',
+            secondary: '#7000ff',
+            glow: 'glow-blue',
+            gradient: 'from-cyan-400 to-purple-600'
+        },
+        classic: {
+            primary: '#ffd700',
+            secondary: '#ffa500',
+            glow: 'glow-pink',
+            gradient: 'from-yellow-400 to-orange-500'
         }
     };
 
@@ -110,8 +122,9 @@ function AnimeTimeline() {
                 <div className="glass-card-3d holographic p-6 rounded-2xl">
                     <div className="flex flex-wrap justify-center gap-4">
                         {animeTimeline.map((era, index) => {
-                            const colors = themeColors[era.theme];
+                            const colors = themeColors[era.theme] || themeColors.modern;
                             const isActive = selectedEra === index;
+                            const stats = eraStats[era.era] || { shows: '???', milestone: 'Unknown' };
 
                             return (
                                 <button
@@ -132,7 +145,7 @@ function AnimeTimeline() {
                                     <div className="relative z-10">
                                         <div className="text-white font-black text-lg mb-1">{era.era}</div>
                                         <div className={`text-xs bg-gradient-to-r ${colors.gradient} bg-clip-text text-transparent`}>
-                                            {eraStats[era.era].shows} Shows
+                                            {stats.shows} Shows
                                         </div>
                                     </div>
 
