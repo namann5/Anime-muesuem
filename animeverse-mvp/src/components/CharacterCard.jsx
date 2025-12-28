@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF, Html } from '@react-three/drei';
 
-export default function CharacterCard({ character, position, index }) {
+export default function CharacterCard({ character, position, index, wireframe = false }) {
     const groupRef = useRef();
     const [hovered, setHovered] = useState(false);
     const [clicked, setClicked] = useState(false);
@@ -19,6 +19,16 @@ export default function CharacterCard({ character, position, index }) {
             console.warn(`Failed to load model for ${character.name}:`, error);
         }
     }
+
+    useEffect(() => {
+        if (model && model.scene) {
+            model.scene.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.wireframe = wireframe;
+                }
+            });
+        }
+    }, [model, wireframe]);
 
     // Gentle floating animation
     useFrame((state) => {

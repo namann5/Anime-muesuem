@@ -6,11 +6,21 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
 import { useAnimations } from '@react-three/drei'
 import * as THREE from 'three'
 
-export default function ModelViewer({ src, onReady, playing = true }) {
+export default function ModelViewer({ src, onReady, playing = true, wireframe = false }) {
   const group = useRef()
   const { gl } = useThree()
   const [gltf, setGltf] = useState(null)
   const [mixer, setMixer] = useState(null)
+
+  useEffect(() => {
+    if (gltf && gltf.scene) {
+      gltf.scene.traverse((child) => {
+        if (child.isMesh) {
+          child.material.wireframe = wireframe
+        }
+      })
+    }
+  }, [gltf, wireframe])
 
   useEffect(() => {
     let mounted = true
