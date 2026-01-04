@@ -199,6 +199,10 @@ export default defineConfig({
 - Some anime may not have streaming sources available
 - Player requires stable internet connection
 
+## Cleanup Notes
+
+- Archived several local test and investigation files under `server/` to reduce repository noise. Remove them manually if you need to purge them from version control.
+
 ## 🔮 Future Enhancements
 
 - [ ] User authentication and profiles

@@ -1,11 +1,15 @@
-import { searchStreamingAnime, getStreamingInfo, getStreamingLinks } from './streamingApi';
+import {
+  searchStreamingAnime,
+  getStreamingInfo,
+  getStreamingLinks,
+} from "./streamingApi";
 
 /**
  * AniList API Client (GraphQL)
  * Replaces Jikan API for better performance and reliability.
  */
 
-const ANILIST_API = 'https://graphql.anilist.co';
+const ANILIST_API = "https://graphql.anilist.co";
 
 /**
  * Generic GraphQL Fetcher
@@ -13,10 +17,10 @@ const ANILIST_API = 'https://graphql.anilist.co';
 async function fetchGraphQL(query, variables = {}) {
   try {
     const response = await fetch(ANILIST_API, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({
         query,
@@ -30,13 +34,13 @@ async function fetchGraphQL(query, variables = {}) {
 
     const data = await response.json();
     if (data.errors) {
-      console.error('AniList GraphQL Errors:', data.errors);
+      console.error("AniList GraphQL Errors:", data.errors);
       throw new Error(data.errors[0].message);
     }
 
     return data.data;
   } catch (error) {
-    console.error('AniList fetch error:', error);
+    console.error("AniList fetch error:", error);
     throw error;
   }
 }
@@ -203,7 +207,7 @@ export async function getAnimeRecommendations(id) {
 
   const data = await fetchGraphQL(query, { id });
   return data.Media.recommendations.nodes
-    .map(node => node.mediaRecommendation)
+    .map((node) => node.mediaRecommendation)
     .filter(Boolean);
 }
 
@@ -225,7 +229,6 @@ export async function searchAnime(searchText) {
   return data.Page.media;
 }
 
-
 // --- Streaming Logic (Consumet Bridge via Local Proxy) ---
 
 /**
@@ -236,7 +239,9 @@ export async function findAnimeByTitle(titleEnglish, titleRomaji) {
   let match = await searchAnimePahe(titleEnglish);
 
   if (!match && titleRomaji && titleRomaji !== titleEnglish) {
-    console.log(`No stream found for "${titleEnglish}", trying "${titleRomaji}"...`);
+    console.log(
+      `No stream found for "${titleEnglish}", trying "${titleRomaji}"...`
+    );
     match = await searchAnimePahe(titleRomaji);
   }
 
@@ -260,7 +265,7 @@ async function searchAnimePahe(query) {
     }
     return null;
   } catch (error) {
-    console.warn('AnimePahe search error:', error);
+    console.warn("AnimePahe search error:", error);
     return null;
   }
 }
@@ -278,4 +283,3 @@ export async function getAnimeInfo(id) {
 export async function getEpisodeStream(episodeId) {
   return await getStreamingLinks(episodeId);
 }
-
