@@ -10,9 +10,12 @@ async function investigateAnimePahe() {
         console.log('Step 1: Searching for "Spy x Family"...');
         const searchResults = await animepahe.search('spy family');
         const firstResult = searchResults.results[0];
-        console.log('First Result:', JSON.stringify(firstResult, null, 2));
+/* ARCHIVED: investigation script
+    This file was archived during a repo cleanup. It is intentionally left empty.
+    Remove this file manually if you want it deleted from version control.
+*/
 
-        // Step 2: Get Info
+module.exports = {};
         console.log('\nStep 2: Getting anime info...');
         const info = await animepahe.fetchAnimeInfo(firstResult.id);
         console.log('Anime Title:', info.title);
