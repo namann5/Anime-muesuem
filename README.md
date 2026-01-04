@@ -1,193 +1,91 @@
-# 🔧 Development Workflow Guide
+# 🎬 AnimeVerse - Quick Setup Guide
 
-## 🎯 Goal: Test Locally Before Deploying
+Welcome! Follow these simple steps to run AnimeVerse on your PC.
 
-You now have **two branches**:
-- `main` → Production (deployed to Vercel)
-- `development` → Testing (your workspace)
+## 📋 Prerequisites
 
----
+Before you start, make sure you have:
+- **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
+- **Git** - [Download here](https://git-scm.com/)
 
-## 📋 Daily Workflow
+## 🚀 Quick Start
 
-### **1. Make Changes (Always on Development Branch)**
-
+### Step 1: Clone the Repository
 ```bash
-# Make sure you're on development branch
-git branch  # Should show * development
-
-# If not, switch to it
-git checkout development
-
-# Now make your changes, test locally
-# Your local servers: http://localhost:5173
+git clone https://github.com/namann5/Anime-muesuem.git
+cd Anime-muesuem/animeverse-mvp
 ```
 
-### **2. Save Your Work**
-
+### Step 2: Install Dependencies
 ```bash
-# After testing locally and everything works
-git add .
-git commit -m "describe your changes"
-git push origin development
+npm install
+cd server
+npm install
+cd ..
 ```
 
-**✅ This pushes to `development` branch only - does NOT affect your live site!**
-
----
-
-### **3. When Ready to Deploy**
-
-Only when you're 100% sure everything works:
-
+### Step 3: Start the Backend Server
+Open a terminal and run:
 ```bash
-# Switch to main branch
-git checkout main
-
-# Merge your tested changes from development
-git merge development
-
-# Push to deploy
-git push origin main
+cd server
+node index.js
 ```
 
-**✅ NOW it deploys to Vercel and updates your live site!**
-
----
-
-## 🚀 Quick Commands
-
-### **Daily Development:**
-```bash
-# Start working
-git checkout development
-
-# Make changes, test locally
-# (npm run dev should be running)
-
-# Save changes (does NOT deploy)
-git add .
-git commit -m "your message"
-git push origin development
+You should see:
+```
+🚀 Backend server running on http://localhost:3001
+✅ Consumet provider (AnimePahe) initialized successfully
 ```
 
-### **Deploy to Production:**
+### Step 4: Start the Frontend (in a NEW terminal)
+Open another terminal in the project root and run:
 ```bash
-# Only when ready!
-git checkout main
-git merge development
-git push origin main
-# ↑ This deploys to live site
+npm run dev
 ```
 
-### **Check Current Branch:**
-```bash
-git branch
-# * development  ← You're here (safe to experiment)
-#   main         ← Production branch
+You should see:
+```
+VITE ready in XXX ms
+➜  Local:   http://localhost:5173/
 ```
 
----
-
-## ✅ Current Status
-
-- ✅ You're now on `development` branch
-- ✅ All future changes stay here
-- ✅ `main` branch is protected (your deployment)
-- ✅ Test everything locally before merging to main
-
----
-
-## 🎬 Example Workflow
-
-**Scenario: You want to add a new feature**
-
-```bash
-# 1. Make sure you're on development
-git checkout development
-
-# 2. Make your changes in VS Code
-# 3. Test locally (localhost:5173)
-# 4. If it works, save it
-
-git add .
-git commit -m "Added new feature"
-git push origin development
-
-# 5. Test more, make more changes, repeat steps 2-4
-
-# 6. When EVERYTHING is perfect and tested
-git checkout main
-git merge development
-git push origin main
-# ↑ NOW it goes live!
+### Step 5: Open in Browser
+Open your browser and go to:
+```
+http://localhost:5173
 ```
 
----
+## 🎉 That's it!
 
-## ⚠️ Important Rules
+You should now see the AnimeVerse app running. You can:
+- Search for anime
+- Browse popular shows
+- Stream episodes
 
-1. **NEVER work directly on `main` branch**
-   - Always use `development` for changes
+## ⚠️ Important Notes
 
-2. **Test thoroughly before merging to main**
-   - Your live site depends on `main` branch
+- **Keep both terminals running** - You need both the frontend and backend servers
+- **Internet required** - The app fetches anime data from online sources
+- **Port conflicts** - If ports 3001 or 5173 are already in use, you'll need to change them
 
-3. **Push to `development` as often as you want**
-   - It's your playground, won't affect live site
+## 🛠️ Troubleshooting
 
-4. **Only merge to `main` when ready to deploy**
-   - This is your "release" moment
+### "Port already in use" error
+- Close any apps using ports 3001 or 5173
+- Or modify the port numbers in the config files
 
----
+### "Module not found" error
+- Make sure you ran `npm install` in both the root directory AND the server directory
+- Try deleting `node_modules` folder and running `npm install` again
 
-## 🔍 Branch Status
+### Backend not connecting
+- Make sure the backend server is running (Step 3)
+- Check that it's running on port 3001
 
-```bash
-# See which branch you're on
-git branch
+## 📞 Need Help?
 
-# See all branches
-git branch -a
-
-# Switch branches
-git checkout development  # For testing
-git checkout main        # For deploying
-```
-
----
-
-## 💡 Pro Tips
-
-1. **Always check your branch before committing**
-   ```bash
-   git branch  # Shows current branch
-   ```
-
-2. **If you accidentally work on main**
-   ```bash
-   # Don't panic! Move changes to development
-   git stash
-   git checkout development
-   git stash pop
-   ```
-
-3. **Keep development in sync with main**
-   ```bash
-   git checkout development
-   git merge main
-   ```
+Check the main [README.md](README.md) for detailed documentation or open an issue on GitHub.
 
 ---
 
-## 🎯 Summary
-
-**Your Workflow:**
-1. Work on `development` branch (you're here now!)
-2. Test locally (localhost:5173)
-3. Push to `development` (safe, won't deploy)
-4. When ready, merge to `main` and push (deploys!)
-
-**Current Branch:** `development` ✅
-
-**You're all set!** Make changes freely - they won't affect your deployed site until you merge to `main`. 🚀
+**Enjoy watching anime! 🍿**
