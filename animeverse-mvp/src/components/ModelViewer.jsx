@@ -128,6 +128,9 @@ export default function ModelViewer({
 
   useFrame((state, delta) => {
     if (mixer) mixer.update(delta);
+    if ((!gltf || !gltf.scene) && group.current) {
+      group.current.rotation.y += delta * 0.45;
+    }
   });
 
   // Fallback: procedural stylized character while loading or if load fails
@@ -174,6 +177,18 @@ export default function ModelViewer({
               color="#0b1333"
               metalness={0.1}
               roughness={0.4}
+            />
+          </mesh>
+
+          {/* holo ring */}
+          <mesh position={[0, -0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.62, 0.03, 12, 36]} />
+            <meshStandardMaterial
+              color="#ec4899"
+              emissive="#ec4899"
+              emissiveIntensity={0.35}
+              metalness={0.5}
+              roughness={0.2}
             />
           </mesh>
         </group>
