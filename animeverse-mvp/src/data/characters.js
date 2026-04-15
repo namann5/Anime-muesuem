@@ -17,7 +17,7 @@ export const characters = [
     animeTitle: "Jujutsu Kaisen",
     description:
       'The strongest jujutsu sorcerer. His "Limitless" technique allows him to manipulate space at an atomic level.',
-    modelUrl: "https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb", // Placeholder style
+    modelUrl: "procedural:guardian", // Placeholder style
     thumbnailUrl: "",
     role: "Teacher/Special Grade Sorcerer",
   },
@@ -28,7 +28,7 @@ export const characters = [
     animeTitle: "Demon Slayer",
     description:
       "A kind-hearted boy who becomes a demon slayer to save his sister and avenge his family.",
-    modelUrl: "https://models.readyplayer.me/6478e1e6815f0fe5e6e94ce2.glb", // Placeholder style
+    modelUrl: "procedural:striker", // Placeholder style
     thumbnailUrl: "",
     role: "Demon Slayer",
   },
@@ -39,7 +39,7 @@ export const characters = [
     animeTitle: "Attack on Titan",
     description:
       "A top-ranked soldier in the Survey Corps with extraordinary combat skills and unwavering loyalty.",
-    modelUrl: "https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb", // Placeholder style
+    modelUrl: "procedural:sage", // Placeholder style
     thumbnailUrl: "",
     role: "Soldier",
   },
@@ -50,7 +50,7 @@ export const characters = [
     animeTitle: "Dragon Ball Z",
     description:
       "The legendary Saiyan who has saved Earth countless times. His power grows with every battle.",
-    modelUrl: "https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb",
+    modelUrl: "procedural:guardian",
     thumbnailUrl: "",
     role: "Protagonist",
   },
@@ -61,7 +61,7 @@ export const characters = [
     animeTitle: "Naruto",
     description:
       "A ninja who dreams of becoming Hokage. He carries the spirit of the Nine-Tailed Fox within him.",
-    modelUrl: "https://models.readyplayer.me/6478e1e6815f0fe5e6e94ce2.glb",
+    modelUrl: "procedural:striker",
     thumbnailUrl: "",
     role: "Protagonist",
   },
@@ -72,7 +72,7 @@ export const characters = [
     animeTitle: "One Piece",
     description:
       "Captain of the Straw Hat Pirates. He ate the Gum-Gum Fruit, giving him the properties of rubber.",
-    modelUrl: "https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb",
+    modelUrl: "procedural:sage",
     thumbnailUrl: "",
     role: "Protagonist",
   },
@@ -83,7 +83,7 @@ export const characters = [
     animeTitle: "Tokyo Ghoul",
     description:
       "A college student who becomes a half-ghoul after a tragic encounter. He struggles to balance his two natures.",
-    modelUrl: "https://models.readyplayer.me/647a1234815f0fe5e6e95abc.glb",
+    modelUrl: "procedural:rogue",
     thumbnailUrl: "",
     role: "Protagonist",
   },
@@ -94,7 +94,7 @@ export const characters = [
     animeTitle: "Naruto",
     description:
       "The last surviving member of the Uchiha clan. A prodigy driven by a desire for power and vengeance.",
-    modelUrl: "https://models.readyplayer.me/648b5678c5b05779c6587def.glb",
+    modelUrl: "procedural:guardian",
     thumbnailUrl: "",
     role: "Rival/Protagonist",
   },
@@ -105,7 +105,7 @@ export const characters = [
     animeTitle: "Demon Slayer",
     description:
       "A demon slayer with a cowardly personality who becomes incredibly powerful when he loses consciousness.",
-    modelUrl: "https://models.readyplayer.me/649c7890815f0fe5e6e96fed.glb",
+    modelUrl: "procedural:striker",
     thumbnailUrl: "",
     role: "Demon Slayer",
   },
@@ -116,7 +116,7 @@ export const characters = [
     animeTitle: "One Piece",
     description:
       "The swordsman of the Straw Hat Pirates. He uses the unique Three Sword Style.",
-    modelUrl: "https://models.readyplayer.me/647a1234815f0fe5e6e95abc.glb", // Placeholder
+    modelUrl: "procedural:rogue", // Placeholder
     thumbnailUrl: "",
     role: "Swordsman",
   },
@@ -127,7 +127,7 @@ export const characters = [
     animeTitle: "One Punch Man",
     description:
       "The strongest hero who can defeat any opponent with a single punch.",
-    modelUrl: "https://models.readyplayer.me/648b5678c5b05779c6587def.glb", // Placeholder
+    modelUrl: "procedural:guardian", // Placeholder
     thumbnailUrl: "",
     role: "Hero",
   },
@@ -138,7 +138,7 @@ export const characters = [
     animeTitle: "Demon Slayer",
     description:
       "Tanjiro's sister who was turned into a demon but retains her human soul.",
-    modelUrl: "https://models.readyplayer.me/64b8c3e9c5b05779c6576bc3.glb", // Placeholder
+    modelUrl: "procedural:sage", // Placeholder
     thumbnailUrl: "",
     role: "Demon",
   },
@@ -149,7 +149,7 @@ export const characters = [
     animeTitle: "Bleach",
     description:
       "A substitute Soul Reaper who protects the world of the living from Hollows.",
-    modelUrl: "https://models.readyplayer.me/64a66a31c5b05779c65604c8.glb", // Placeholder
+    modelUrl: "procedural:guardian", // Placeholder
     thumbnailUrl: "",
     role: "Soul Reaper",
   },
