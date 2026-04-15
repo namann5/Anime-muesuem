@@ -50,6 +50,7 @@ export default function App() {
   const [animeId, setAnimeId] = useState(null);
   const [galleryClickCount, setGalleryClickCount] = useState(0);
   const [showControls, setShowControls] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Handle hash-based routing for anime detail pages
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function App() {
   const navigateTo = (newRoute) => {
     setRoute(newRoute);
     setAnimeId(null);
+    setMobileMenuOpen(false);
     window.location.hash = ""; // Clear hash
   };
 
@@ -137,7 +139,11 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="md:hidden glass-card-modern p-2 rounded-lg text-white">
+            <button
+              className="md:hidden glass-card-modern p-2 rounded-lg text-white"
+              aria-label="Toggle navigation menu"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -158,6 +164,38 @@ export default function App() {
             </button>
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-3 glass-modern rounded-2xl border-white/5 px-4 py-3">
+            <div className="grid gap-2">
+              {[
+                { id: "home", label: "Home" },
+                { id: "gallery", label: "Models" },
+                { id: "watch-anime", label: "Cinema" },
+                { id: "museum", label: "Museum" },
+                { id: "timeline", label: "Timeline" },
+                { id: "support", label: "Support" },
+              ].map((item) => (
+                <button
+                  key={`mobile-${item.id}`}
+                  onClick={() =>
+                    item.id === "gallery"
+                      ? handleGalleryClick()
+                      : navigateTo(item.id)
+                  }
+                  className={`text-left rounded-lg px-3 py-2 text-xs font-black tracking-[0.15em] uppercase transition-colors ${
+                    route === item.id ||
+                    (item.id === "watch-anime" && route === "anime-detail")
+                      ? "text-pink-500 bg-white/5"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Page rendering with transitions and suspense */}
