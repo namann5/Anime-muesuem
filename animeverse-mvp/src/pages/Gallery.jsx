@@ -143,13 +143,17 @@ export default function Gallery({ showControls = false }) {
     .filter(
       (char) =>
         char.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (char.anime &&
-          char.anime.toLowerCase().includes(searchQuery.toLowerCase()))
+        ((char.animeTitle || char.anime) &&
+          (char.animeTitle || char.anime)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))
     )
     .sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
       if (sortBy === "anime")
-        return (a.anime || "").localeCompare(b.anime || "");
+        return (a.animeTitle || a.anime || "").localeCompare(
+          b.animeTitle || b.anime || ""
+        );
       return 0;
     });
 
