@@ -1,31 +1,53 @@
-# 🎬 AnimeVerse - Quick Setup Guide
+# 🎬 AnimeVerse MVP
 
-Welcome! Follow these simple steps to run AnimeVerse on your PC.
+A modern, sleek anime streaming web application built with React and powered by AnimePahe integration.
 
-## 📋 Prerequisites
+![AnimeVerse](https://img.shields.io/badge/Status-Active-success)
+![React](https://img.shields.io/badge/React-18.3-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-Before you start, make sure you have:
-- **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
-- **Git** - [Download here](https://git-scm.com/)
+## ✨ Features
+
+- 🔍 **Advanced Search** - Search thousands of anime titles with real-time results
+- 📺 **Streaming Player** - Embedded AnimePahe player for seamless watching
+- 🎨 **Beautiful UI** - Modern, gradient-based design with smooth animations
+- 📱 **Responsive** - Works perfectly on desktop, tablet, and mobile
+- 🎭 **Anime Details** - View synopsis, ratings, genres, and episode lists
+- ⚡ **Fast & Smooth** - Optimized performance with React
+- 🌐 **Backend Proxy** - Express server to handle API requests and bypass CORS
 
 ## 🚀 Quick Start
 
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/namann5/Anime-muesuem.git
-cd Anime-muesuem/animeverse-mvp
-```
+### Prerequisites
 
-### Step 2: Install Dependencies
-```bash
-npm install
-cd server
-npm install
-cd ..
-```
+- Node.js (v16 or higher)
+- npm or yarn
 
-### Step 3: Start the Backend Server
-Open a terminal and run:
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/namann5/Anime-muesuem.git
+   cd animeverse-mvp
+   ```
+
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install backend dependencies**
+   ```bash
+   cd server
+   npm install
+   cd ..
+   ```
+
+### Running the Application
+
+You need to run **TWO** servers:
+
+#### 1. Start the Backend Server (Port 3001)
 ```bash
 cd server
 node index.js
@@ -37,55 +59,189 @@ You should see:
 ✅ Consumet provider (AnimePahe) initialized successfully
 ```
 
-### Step 4: Start the Frontend (in a NEW terminal)
-Open another terminal in the project root and run:
+#### 2. Start the Frontend Dev Server (Port 5173)
+Open a **new terminal** and run:
 ```bash
 npm run dev
 ```
 
 You should see:
 ```
-VITE ready in XXX ms
+VITE v5.x.x  ready in xxx ms
+
 ➜  Local:   http://localhost:5173/
 ```
 
-### Step 5: Open in Browser
-Open your browser and go to:
+### 🎉 Access the App
+
+Open your browser and navigate to:
 ```
 http://localhost:5173
 ```
 
-## 🎉 That's it!
+## 📁 Project Structure
 
-You should now see the AnimeVerse app running. You can:
-- Search for anime
-- Browse popular shows
-- Stream episodes
+```
+animeverse-mvp/
+├── src/
+│   ├── api/
+│   │   ├── anilistApi.js       # AniList GraphQL API integration
+│   │   └── streamingApi.js     # AnimePahe streaming API
+│   ├── components/
+│   │   ├── AnimeCard.jsx        # Anime card component
+│   │   ├── AnimePlayer.jsx      # Video player component
+│   │   └── CharacterCard.jsx    # Character display component
+│   ├── pages/
+│   │   ├── Home.jsx             # Landing page
+│   │   ├── WatchAnime.jsx       # Anime browsing page
+│   │   ├── AnimeDetail.jsx      # Anime details & episodes
+│   │   └── Museum.jsx           # Character museum
+│   ├── App.jsx                  # Main app component
+│   └── index.css                # Global styles
+├── server/
+│   ├── index.js                 # Express backend server
+│   └── package.json             # Backend dependencies
+├── public/                      # Static assets
+├── package.json                 # Frontend dependencies
+└── vite.config.js              # Vite configuration
+```
 
-## ⚠️ Important Notes
+## 🛠️ Tech Stack
 
-- **Keep both terminals running** - You need both the frontend and backend servers
-- **Internet required** - The app fetches anime data from online sources
-- **Port conflicts** - If ports 3001 or 5173 are already in use, you'll need to change them
+### Frontend
+- **React 18.3** - UI library
+- **Vite** - Build tool and dev server
+- **CSS3** - Styling with gradients and animations
+- **React Router** - Client-side routing
 
-## 🛠️ Troubleshooting
+### Backend
+- **Express.js** - Web server
+- **Consumet API** - Anime data and streaming sources
+- **CORS** - Cross-origin resource sharing
+- **Axios** - HTTP client
 
-### "Port already in use" error
-- Close any apps using ports 3001 or 5173
-- Or modify the port numbers in the config files
+### APIs
+- **AniList GraphQL API** - Anime metadata, ratings, and information
+- **AnimePahe (via Consumet)** - Streaming sources and episodes
 
-### "Module not found" error
-- Make sure you ran `npm install` in both the root directory AND the server directory
-- Try deleting `node_modules` folder and running `npm install` again
+## 🎮 Usage
 
-### Backend not connecting
-- Make sure the backend server is running (Step 3)
-- Check that it's running on port 3001
+### Watch Anime
+1. Click **"Watch Anime"** on the homepage
+2. Browse trending anime or use the search bar
+3. Click **"Play"** on any anime
+4. Select an episode from the list
+5. Enjoy streaming!
 
-## 📞 Need Help?
+### Features in Detail
 
-Check the main [README.md](README.md) for detailed documentation or open an issue on GitHub.
+#### 🔍 Search
+- Real-time search with debouncing
+- Search by anime title
+- Displays results with cover images and ratings
+
+#### 📺 Player
+- Embedded AnimePahe player
+- Episode navigation (Previous/Next)
+- Multiple quality options
+- Fullscreen support
+
+#### 📊 Anime Details
+- Synopsis and description
+- Episode count and status
+- Genres and tags
+- Average rating
+- Cover and banner images
+
+## ⚙️ Configuration
+
+### Backend Port
+The backend runs on port `3001` by default. To change it, edit `server/index.js`:
+```javascript
+const PORT = process.env.PORT || 3001;
+```
+
+### Frontend Port
+The frontend runs on port `5173` by default (Vite default). To change it, edit `vite.config.js`:
+```javascript
+export default defineConfig({
+  server: {
+    port: 5173
+  }
+})
+```
+
+## 🐛 Troubleshooting
+
+### Backend not starting?
+- Make sure you're in the `server` directory
+- Check if port 3001 is available
+- Verify all dependencies are installed: `npm install`
+
+### Frontend not loading?
+- Ensure the backend is running first
+- Check if port 5173 is available
+- Clear browser cache and reload
+
+### Episodes not loading?
+- Verify the backend server is running on port 3001
+- Check browser console for errors
+- Ensure internet connection is stable
+
+### Player not working?
+- The player uses AnimePahe's embedded player
+- Some browsers may block iframes - check browser settings
+- Try disabling ad blockers temporarily
+
+## 🚧 Known Issues
+
+- Large file sizes in Git history (working on optimization)
+- Some anime may not have streaming sources available
+- Player requires stable internet connection
+
+## Cleanup Notes
+
+- Archived several local test and investigation files under `server/` to reduce repository noise. Remove them manually if you need to purge them from version control.
+
+## 🔮 Future Enhancements
+
+- [ ] User authentication and profiles
+- [ ] Watchlist and favorites
+- [ ] Continue watching feature
+- [ ] Multiple streaming providers
+- [ ] Download episodes
+- [ ] Dark/Light theme toggle
+- [ ] Advanced filters (genre, year, rating)
+- [ ] Recommendations engine
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+
+## ⚠️ Disclaimer
+
+This application is for educational purposes only. All anime content is sourced from third-party providers. Please support official releases.
+
+## 👨‍💻 Developer
+
+Created with ❤️ by [namann5](https://github.com/namann5)
+
+## 🙏 Acknowledgments
+
+- [AniList](https://anilist.co/) - For the amazing GraphQL API
+- [Consumet](https://github.com/consumet/consumet.ts) - For the streaming API
+- [AnimePahe](https://animepahe.com/) - For streaming sources
+- React & Vite communities
 
 ---
 
-**Enjoy watching anime! 🍿**
+**Enjoy watching anime! 🎉**
+
+For issues or questions, please open an issue on GitHub.
