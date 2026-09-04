@@ -9,13 +9,13 @@ export default function MuseumFloor() {
     canvas.height = 512;
     const ctx = canvas.getContext("2d");
 
-    // Base color
-    ctx.fillStyle = "#e8e8e8";
+    // Base color — warm dark stone
+    ctx.fillStyle = "#141313";
     ctx.fillRect(0, 0, 512, 512);
 
     // Add some noise/veins for marble effect
     for (let i = 0; i < 50; i++) {
-      ctx.strokeStyle = `rgba(200, 200, 200, ${Math.random() * 0.3})`;
+      ctx.strokeStyle = `rgba(200, 190, 175, ${Math.random() * 0.12})`;
       ctx.lineWidth = Math.random() * 3;
       ctx.beginPath();
       ctx.moveTo(Math.random() * 512, Math.random() * 512);
@@ -37,13 +37,13 @@ export default function MuseumFloor() {
         <planeGeometry args={[50, 50]} />
         <meshStandardMaterial
           map={createMarbleTexture()}
-          roughness={0.2}
-          metalness={0.1}
+          roughness={0.4}
+          metalness={0.05}
         />
       </mesh>
 
       {/* Grid lines for visual reference */}
-      <gridHelper args={[50, 50, 0x444444, 0x222222]} position={[0, 0.01, 0]} />
+      <gridHelper args={[50, 50, 0x3a3835, 0x232220]} position={[0, 0.01, 0]} />
     </group>
   );
 }

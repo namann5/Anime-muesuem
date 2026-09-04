@@ -21,12 +21,12 @@ function LoadedModel({ modelUrl, wireframe }) {
 function ProceduralModel({ variant = "guardian", hovered = false, wireframe = false }) {
   const bodyColor =
     variant === "striker"
-      ? "#60a5fa"
+      ? "#8FA3B0"
       : variant === "sage"
-      ? "#a78bfa"
+      ? "#C2B8A3"
       : variant === "rogue"
-      ? "#34d399"
-      : "#ff9acb";
+      ? "#A3B5A0"
+      : "#E09A7F";
 
   return (
     <group>
@@ -45,7 +45,7 @@ function ProceduralModel({ variant = "guardian", hovered = false, wireframe = fa
       <mesh position={[0, 1.28, 0]}>
         <icosahedronGeometry args={[0.24, 1]} />
         <meshStandardMaterial
-          color="#f5f3ff"
+          color="#EDE9DE"
           metalness={0.35}
           roughness={0.2}
           wireframe={wireframe}
@@ -117,13 +117,13 @@ export default function CharacterCard({
             className="character-info-card"
             style={{
               background:
-                "linear-gradient(135deg, rgba(5,5,10,0.95) 0%, rgba(20,20,30,0.95) 100%)",
-              border: "2px solid rgba(255, 110, 166, 0.5)",
+                "linear-gradient(135deg, rgba(10,10,11,0.96) 0%, rgba(20,20,22,0.96) 100%)",
+              border: "1px solid rgba(217, 122, 92, 0.45)",
               borderRadius: "12px",
               padding: "16px",
               minWidth: "200px",
               maxWidth: "300px",
-              boxShadow: "0 8px 32px rgba(255, 110, 166, 0.3)",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.6)",
               backdropFilter: "blur(10px)",
               animation: "fadeInUp 0.3s ease-out",
               pointerEvents: "none",
@@ -132,7 +132,7 @@ export default function CharacterCard({
             <h3
               style={{
                 margin: "0 0 8px 0",
-                background: "linear-gradient(90deg, #ff6ea6, #ff9acb)",
+                background: "linear-gradient(90deg, #D97A5C, #E09A7F)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontSize: "18px",
@@ -146,7 +146,7 @@ export default function CharacterCard({
               <p
                 style={{
                   margin: "4px 0",
-                  color: "#9aa0a6",
+                  color: "#A1A094",
                   fontSize: "13px",
                 }}
               >
@@ -158,7 +158,7 @@ export default function CharacterCard({
               <p
                 style={{
                   margin: "4px 0",
-                  color: "#9aa0a6",
+                  color: "#A1A094",
                   fontSize: "13px",
                 }}
               >
@@ -170,7 +170,7 @@ export default function CharacterCard({
               <p
                 style={{
                   margin: "8px 0 0 0",
-                  color: "#ccc",
+                  color: "#E1E0CC",
                   fontSize: "12px",
                   lineHeight: "1.4",
                 }}
@@ -185,7 +185,7 @@ export default function CharacterCard({
       <mesh position={[0, -0.5, 0]} receiveShadow>
         <cylinderGeometry args={[0.6, 0.7, 0.1, 32]} />
         <meshStandardMaterial
-          color={hovered ? "#ff6ea6" : "#333"}
+          color={hovered ? "#D97A5C" : "#3A3733"}
           metalness={0.8}
           roughness={0.2}
         />

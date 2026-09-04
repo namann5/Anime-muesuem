@@ -111,11 +111,11 @@ export default function AnimeDetail({ malId, onBack }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+      <div className="min-h-screen bg-anime-dark flex items-center justify-center">
         <div className="relative">
-          <div className="w-20 h-20 border-2 border-pink-500/20 border-t-pink-500 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black tracking-tighter text-pink-500 uppercase">
-            Loading
+          <div className="w-20 h-20 border border-anime-terracotta/20 border-t-anime-terracotta rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center font-serif-accent text-lg text-anime-cream/60">
+            Cueing…
           </div>
         </div>
       </div>
@@ -124,10 +124,10 @@ export default function AnimeDetail({ malId, onBack }) {
 
   if (error || !anime) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-anime-dark flex items-center justify-center p-6">
         <div className="glass-modern p-12 rounded-[2rem] text-center max-w-lg">
           <div className="text-6xl mb-6">⚠️</div>
-          <p className="text-white/60 mb-8 font-medium">
+          <p className="text-anime-cream/55 mb-8 font-medium">
             {error || "Anime details could not be retrieved at this time."}
           </p>
           <button
@@ -147,18 +147,18 @@ export default function AnimeDetail({ malId, onBack }) {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#050505] text-white selection:bg-pink-500/30"
+      className="min-h-screen bg-anime-dark text-anime-cream selection:bg-anime-terracotta/30"
     >
       {/* Immersive Header */}
       <div className="relative h-[50vh] md:h-[70vh] w-full overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={bannerImage}
-            className="w-full h-full object-cover scale-105 blur-2xl opacity-40"
+            className="w-full h-full object-cover scale-105 blur-2xl opacity-35"
             alt=""
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-anime-dark via-anime-dark/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-anime-dark via-transparent to-anime-dark/50"></div>
         </div>
 
         <div className="absolute inset-0 z-10 container mx-auto px-4 md:px-6 flex flex-col justify-end pb-12 md:pb-24">
@@ -171,7 +171,7 @@ export default function AnimeDetail({ malId, onBack }) {
               />
             </div>
 
-            <div className="hidden md:block w-72 aspect-[2/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 detail-fade-in">
+            <div className="hidden md:block w-72 aspect-[2/3] rounded-3xl overflow-hidden shadow-2xl border border-anime-line detail-fade-in">
               <img
                 src={bannerImage}
                 className="w-full h-full object-cover"
@@ -184,7 +184,7 @@ export default function AnimeDetail({ malId, onBack }) {
                 {anime.genres?.slice(0, 3).map((g) => (
                   <span
                     key={g.name}
-                    className="px-3 py-1 glass-card-modern rounded-full text-[10px] font-bold tracking-widest uppercase text-pink-400 border-pink-500/20"
+                    className="px-3 py-1 glass-card-modern rounded-full text-[10px] font-bold tracking-[0.15em] uppercase text-anime-terracotta-soft border-anime-terracotta/20"
                   >
                     {g.name}
                   </span>
@@ -193,17 +193,17 @@ export default function AnimeDetail({ malId, onBack }) {
               <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tighter">
                 {anime.title}
               </h1>
-              <div className="flex flex-wrap items-center gap-8 text-sm font-bold tracking-tight text-white/50">
+              <div className="flex flex-wrap items-center gap-8 text-sm font-bold tracking-tight text-anime-cream/50">
                 <div className="flex items-center gap-2">
-                  <span className="text-pink-500 text-xl">★</span>
-                  <span className="text-white text-lg">
+                  <span className="text-anime-terracotta text-xl">★</span>
+                  <span className="text-anime-cream text-lg">
                     {anime.score || "N/A"}
                   </span>
                 </div>
                 <div>{anime.year || "TBA"}</div>
                 <div>{anime.type}</div>
                 <div>{anime.episodes || "??"} EPS</div>
-                <div className="px-3 py-1 bg-white/10 rounded-md text-white border border-white/10">
+                <div className="px-3 py-1 bg-white/10 rounded-md text-anime-cream border border-anime-line">
                   {anime.status}
                 </div>
               </div>
@@ -213,21 +213,21 @@ export default function AnimeDetail({ malId, onBack }) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="sticky top-0 z-50 glass-modern border-y border-white/5">
+      <div className="sticky top-0 z-50 glass-modern border-y border-anime-line">
         <div className="container mx-auto px-4 md:px-6 flex items-center gap-6 md:gap-12">
           {["watch", "overview", "characters"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-6 text-sm font-black tracking-widest uppercase transition-all relative ${
+              className={`py-6 text-sm font-bold tracking-[0.15em] uppercase transition-all relative ${
                 activeTab === tab
-                  ? "text-white"
-                  : "text-white/30 hover:text-white/60"
+                  ? "text-anime-cream"
+                  : "text-anime-cream/30 hover:text-anime-cream/60"
               }`}
             >
               {tab}
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-pink-500"></div>
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] w-6 bg-anime-terracotta rounded-full"></div>
               )}
             </button>
           ))}
@@ -241,8 +241,8 @@ export default function AnimeDetail({ malId, onBack }) {
             <div className="lg:col-span-3">
               {loadingEpisodes ? (
                 <div className="aspect-video glass-modern rounded-3xl flex items-center justify-center">
-                  <div className="text-pink-500 animate-pulse font-black tracking-widest uppercase">
-                    Initializing Stream...
+                  <div className="text-anime-terracotta animate-pulse font-bold tracking-[0.15em] uppercase">
+                    Initializing stream…
                   </div>
                 </div>
               ) : currentEpisode ? (
@@ -272,8 +272,13 @@ export default function AnimeDetail({ malId, onBack }) {
             </div>
             <div className="lg:col-span-1">
               <div className="glass-card-modern rounded-3xl overflow-hidden h-auto md:h-[600px] flex flex-col">
-                <div className="p-6 border-b border-white/5">
-                  <h3 className="font-black tracking-tighter">EPISODES</h3>
+                <div className="p-6 border-b border-anime-line">
+                  <h3 className="font-black tracking-tight">
+                    EPISODES{" "}
+                    <span className="font-serif-accent text-anime-terracotta-soft">
+                      ({episodes.length})
+                    </span>
+                  </h3>
                 </div>
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                   <EpisodeList
@@ -292,18 +297,24 @@ export default function AnimeDetail({ malId, onBack }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 detail-fade-in">
             <div className="md:col-span-2 space-y-12">
               <section>
-                <h2 className="text-3xl font-black mb-6 tracking-tighter italic">
-                  SYNOPSIS
+                <h2 className="text-3xl font-black mb-6 tracking-tight">
+                  SYNOPSIS{" "}
+                  <span className="font-serif-accent font-normal text-anime-terracotta-soft">
+                    — the story
+                  </span>
                 </h2>
-                <p className="text-lg text-white/60 leading-relaxed font-medium">
+                <p className="text-lg text-anime-cream/55 leading-relaxed font-medium">
                   {anime.synopsis || "No description available for this anime."}
                 </p>
               </section>
 
               {anime.trailer?.embed_url && (
                 <section>
-                  <h2 className="text-3xl font-black mb-6 tracking-tighter italic">
-                    TRAILER
+                  <h2 className="text-3xl font-black mb-6 tracking-tight">
+                    TRAILER{" "}
+                    <span className="font-serif-accent font-normal text-anime-terracotta-soft">
+                      — first look
+                    </span>
                   </h2>
                   <div className="aspect-video glass-modern p-2 rounded-3xl overflow-hidden">
                     <iframe
@@ -318,7 +329,7 @@ export default function AnimeDetail({ malId, onBack }) {
 
             <div className="space-y-8">
               <div className="glass-card-modern p-8 rounded-3xl">
-                <h3 className="font-black mb-6 tracking-tighter">DETAILS</h3>
+                <h3 className="font-black mb-6 tracking-tight">DETAILS</h3>
                 <div className="space-y-4">
                   {[
                     { label: "English", value: anime.titleEnglish },
@@ -335,9 +346,9 @@ export default function AnimeDetail({ malId, onBack }) {
                       item.value && (
                         <div
                           key={item.label}
-                          className="flex justify-between items-start gap-4 py-2 border-b border-white/5"
+                          className="flex justify-between items-start gap-4 py-2 border-b border-anime-line"
                         >
-                          <span className="text-xs font-bold text-white/30 uppercase tracking-widest">
+                          <span className="text-xs font-bold text-anime-cream/25 uppercase tracking-[0.15em]">
                             {item.label}
                           </span>
                           <span className="text-sm font-semibold text-right">
@@ -390,7 +401,7 @@ function CharacterCard({ character, animeId }) {
       <h4 className="font-bold text-sm tracking-tight mb-1 truncate">
         {char?.name}
       </h4>
-      <p className="text-[10px] font-black tracking-widest text-white/30 uppercase">
+      <p className="text-[10px] font-bold tracking-[0.15em] text-anime-cream/25 uppercase">
         {character.role}
       </p>
     </div>

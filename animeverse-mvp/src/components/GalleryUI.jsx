@@ -37,8 +37,8 @@ export default function GalleryUI({
             padding: "4px 8px",
             borderRadius: 4,
             background: "#2a2a2a",
-            color: "white",
-            border: "1px solid #444",
+            color: "#E1E0CC",
+            border: "1px solid #3A3733",
           }}
         >
           <option value="" disabled>
@@ -60,9 +60,9 @@ export default function GalleryUI({
           title={isAdmin ? "Upload new character" : "Admin login required"}
           style={{
             background: isAdmin
-              ? "linear-gradient(90deg, #ff6ea6, #ff9acb)"
-              : "rgba(255, 110, 166, 0.2)",
-            border: isAdmin ? "none" : "1px solid rgba(255, 110, 166, 0.5)",
+              ? "linear-gradient(90deg, #D97A5C, #DE9074)"
+              : "rgba(217, 122, 92, 0.15)",
+            border: isAdmin ? "none" : "1px solid rgba(217, 122, 92, 0.4)",
           }}
         >
           <svg
@@ -147,7 +147,7 @@ export default function GalleryUI({
       </button>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <span style={{ color: "#9aa0a6", marginRight: 6 }}>Clips:</span>
+        <span style={{ color: "#A1A094", marginRight: 6 }}>Clips:</span>
         <select
           aria-label="Animation clips"
           onChange={(e) => onSelectClip(parseInt(e.target.value, 10))}

@@ -71,16 +71,30 @@ export default function Museum({ animeFilter }) {
   const rooms = Object.keys(charactersByAnime);
 
   return (
-    <div className="flex h-screen flex-col bg-[#050505] selection:bg-pink-500/30">
+    <div className="flex h-screen flex-col bg-anime-dark selection:bg-anime-terracotta/30">
       {/* Modern HUD Header */}
-      <header className="relative md:fixed md:top-24 left-0 right-0 z-50 p-4 md:p-6 pointer-events-none">
+      <header className="relative md:fixed md:top-20 left-0 right-0 z-50 p-4 md:p-6 pointer-events-none">
         <div className="container mx-auto flex items-center justify-between pointer-events-auto">
-          <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
+          <div className="glass-modern px-6 py-3.5 rounded-full flex items-center gap-6">
             <div>
-              <h2 className="text-xl font-black tracking-tighter italic leading-none">
-                {animeTitle ? animeTitle.toUpperCase() : "CORE MUSEUM"}
+              <h2 className="text-lg font-black tracking-tight leading-none">
+                {animeTitle ? (
+                  <>
+                    {animeTitle.toUpperCase()}{" "}
+                    <span className="font-serif-accent font-normal text-anime-terracotta-soft">
+                      gallery
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    THE{" "}
+                    <span className="font-serif-accent font-normal text-anime-terracotta-soft">
+                      museum
+                    </span>
+                  </>
+                )}
               </h2>
-              <p className="text-[10px] font-bold tracking-widest text-pink-500 uppercase mt-1">
+              <p className="text-[9px] font-bold tracking-[0.18em] text-anime-terracotta uppercase mt-1">
                 {characters.length} Exhibits Active
               </p>
             </div>
@@ -89,16 +103,16 @@ export default function Museum({ animeFilter }) {
           <div className="flex gap-3">
             <button
               onClick={toggleMusic}
-              className={`btn-modern py-2 px-4 glass-modern ${
-                musicEnabled ? "text-pink-500" : "text-white/40"
+              className={`btn-modern py-2 px-4 rounded-full glass-modern ${
+                musicEnabled ? "text-anime-terracotta" : "text-anime-cream/40"
               }`}
             >
               {musicEnabled ? "AUDIO ON" : "AUDIO OFF"}
             </button>
             <button
               onClick={() => setShowMinimap(!showMinimap)}
-              className={`btn-modern py-2 px-4 glass-modern ${
-                showMinimap ? "text-blue-400" : "text-white/40"
+              className={`btn-modern py-2 px-4 rounded-full glass-modern ${
+                showMinimap ? "text-blue-400" : "text-anime-cream/40"
               }`}
             >
               RADAR
@@ -118,29 +132,29 @@ export default function Museum({ animeFilter }) {
             fallback={
               <Html center>
                 <div className="glass-modern px-12 py-6 rounded-3xl flex flex-col items-center">
-                  <div className="w-12 h-12 border-2 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-4"></div>
-                  <div className="text-[10px] font-black tracking-widest uppercase text-pink-500">
-                    Syncing Reality
+                  <div className="w-12 h-12 border border-anime-terracotta/20 border-t-anime-terracotta rounded-full animate-spin mb-4"></div>
+                  <div className="font-serif-accent text-lg text-anime-cream/60">
+                    Cueing the gallery…
                   </div>
                 </div>
               </Html>
             }
           >
-            <ambientLight intensity={0.1} />
+            <ambientLight intensity={0.22} />
             <directionalLight
               position={[10, 15, 5]}
-              intensity={0.3}
+              intensity={0.45}
               castShadow
             />
 
-            {/* Point Lights for Atmosphere */}
+            {/* Warm atmospheric point lights */}
             <pointLight
               position={[-10, 5, -10]}
-              intensity={1}
-              color="#ff0055"
+              intensity={0.9}
+              color="#D97A5C"
             />
-            <pointLight position={[10, 5, -10]} intensity={1} color="#7000ff" />
-            <pointLight position={[0, 5, -20]} intensity={1} color="#00d4ff" />
+            <pointLight position={[10, 5, -10]} intensity={0.7} color="#8F8577" />
+            <pointLight position={[0, 5, -20]} intensity={0.7} color="#82949F" />
 
             <MuseumFloor />
             <MuseumWalls />
@@ -155,12 +169,12 @@ export default function Museum({ animeFilter }) {
                       center
                       distanceFactor={15}
                     >
-                      <div className="glass-modern px-10 py-5 rounded-[2rem] text-center border-pink-500/20">
-                        <div className="text-white font-black text-2xl italic tracking-tighter">
+                      <div className="glass-modern px-8 py-4 rounded-[1.5rem] text-center">
+                        <div className="text-anime-cream font-black text-xl tracking-tight">
                           {anime.toUpperCase()}
                         </div>
-                        <div className="text-pink-500 text-[10px] font-bold tracking-[0.3em] uppercase mt-1">
-                          Sector {roomIndex + 1}
+                        <div className="text-anime-terracotta text-[9px] font-bold tracking-[0.3em] uppercase mt-1">
+                          Gallery {roomIndex + 1}
                         </div>
                       </div>
                     </Html>
@@ -183,16 +197,16 @@ export default function Museum({ animeFilter }) {
                             position={[x, 6, z]}
                             angle={0.4}
                             penumbra={1}
-                            intensity={0.8}
-                            color="#ffffff"
+                            intensity={0.7}
+                            color="#F3EDE0"
                             target-position={[x, 0, z]}
                           />
                           <Html position={[0, 3, 0]} center distanceFactor={8}>
-                            <div className="glass-card-modern px-5 py-2 rounded-xl border-white/10 group cursor-pointer hover:border-pink-500/50 transition-all">
-                              <div className="text-white font-black text-xs tracking-tight whitespace-nowrap uppercase">
+                            <div className="glass-card-modern px-5 py-2 rounded-xl group cursor-pointer hover:border-anime-terracotta/50 transition-all">
+                              <div className="text-anime-cream font-black text-xs tracking-tight whitespace-nowrap uppercase">
                                 {character.name}
                               </div>
-                              <div className="text-[8px] font-bold tracking-widest text-white/30 uppercase mt-0.5">
+                              <div className="text-[8px] font-bold tracking-[0.18em] text-anime-cream/25 uppercase mt-0.5">
                                 Exhibit #{index + 1}
                               </div>
                             </div>
@@ -216,9 +230,9 @@ export default function Museum({ animeFilter }) {
 
         {/* Modern Radar UI */}
         {showMinimap && (
-          <div className="hidden md:block absolute bottom-6 right-6 w-72 h-72 glass-modern rounded-[2.5rem] p-6 animate-fade-in overflow-hidden border-white/5">
+          <div className="hidden md:block absolute bottom-6 right-6 w-72 h-72 glass-modern rounded-[2rem] p-6 animate-fade-in overflow-hidden">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-black tracking-widest text-blue-400">
+              <span className="text-[10px] font-bold tracking-[0.15em] text-blue-400">
                 POSITIONAL RADAR
               </span>
               <div className="flex gap-1">
@@ -236,7 +250,7 @@ export default function Museum({ animeFilter }) {
 
               {/* Player indicator */}
               <div
-                className="absolute w-3 h-3 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(0,212,255,0.5)] z-20"
+                className="absolute w-3 h-3 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(130,148,159,0.5)] z-20"
                 style={{
                   left: `${50 + (playerPosition.x / 40) * 100}%`,
                   top: `${50 + (playerPosition.z / 40) * 100}%`,
@@ -250,7 +264,7 @@ export default function Museum({ animeFilter }) {
                 return (
                   <div
                     key={room}
-                    className="absolute w-1.5 h-1.5 bg-white/20 rounded-full"
+                    className="absolute w-1.5 h-1.5 bg-anime-cream/30 rounded-full"
                     style={{
                       left: "50%",
                       top: `${50 + (roomZ / 40) * 100}%`,
@@ -265,39 +279,39 @@ export default function Museum({ animeFilter }) {
 
         {/* HUD Controls Info */}
         <div className="absolute bottom-6 left-4 p-1 pointer-events-none">
-          <div className="glass-modern p-4 md:p-6 rounded-[2rem] border-white/5">
+          <div className="glass-modern p-4 md:p-6 rounded-[1.5rem]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
-                <span className="text-pink-500 text-xs font-black">?</span>
+              <div className="w-8 h-8 rounded-full bg-anime-terracotta/15 flex items-center justify-center">
+                <span className="text-anime-terracotta text-xs font-bold">?</span>
               </div>
-              <span className="text-[10px] font-black tracking-widest text-white/40 uppercase">
-                System Guidance
+              <span className="text-[10px] font-bold tracking-[0.15em] text-anime-cream/40 uppercase">
+                Guidance
               </span>
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] font-medium text-white/30">
+                <span className="text-[10px] font-medium text-anime-cream/30">
                   MOVEMENT
                 </span>
-                <span className="text-[10px] font-black text-white">WASD</span>
+                <span className="text-[10px] font-bold text-anime-cream">WASD</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] font-medium text-white/30">
+                <span className="text-[10px] font-medium text-anime-cream/30">
                   LOOK
                 </span>
-                <span className="text-[10px] font-black text-white">MOUSE</span>
+                <span className="text-[10px] font-bold text-anime-cream">MOUSE</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] font-medium text-white/30">
+                <span className="text-[10px] font-medium text-anime-cream/30">
                   SPRINT
                 </span>
-                <span className="text-[10px] font-black text-white">SHIFT</span>
+                <span className="text-[10px] font-bold text-anime-cream">SHIFT</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] font-medium text-white/30">
+                <span className="text-[10px] font-medium text-anime-cream/30">
                   LOCK
                 </span>
-                <span className="text-[10px] font-black text-white">CLICK</span>
+                <span className="text-[10px] font-bold text-anime-cream">CLICK</span>
               </div>
             </div>
           </div>

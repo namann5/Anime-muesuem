@@ -158,52 +158,55 @@ export default function Gallery({ showControls = false }) {
     });
 
   return (
-    <div className="flex h-screen flex-col bg-[#050505] selection:bg-pink-500/30">
+    <div className="flex h-screen flex-col bg-anime-dark selection:bg-anime-terracotta/30">
       {/* Modern HUD Header */}
-      <header className="relative md:fixed md:top-24 md:left-1/2 md:-translate-x-1/2 z-50 w-[95%] max-w-7xl pointer-events-none">
+      <header className="relative md:fixed md:top-20 md:left-1/2 md:-translate-x-1/2 z-50 w-[95%] max-w-7xl pointer-events-none">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pointer-events-auto">
-          <div className="glass-modern px-8 py-4 rounded-2xl flex items-center gap-6">
+          <div className="glass-modern px-6 py-3.5 rounded-full flex items-center gap-6">
             <div>
-              <h2 className="text-xl font-black tracking-tighter italic leading-none">
-                MODELS SHOWCASE
+              <h2 className="text-lg font-black tracking-tight leading-none">
+                MODELS{" "}
+                <span className="font-serif-accent font-normal text-anime-terracotta-soft">
+                  showcase
+                </span>
               </h2>
-              <p className="text-[10px] font-bold tracking-widest text-pink-500 uppercase mt-1">
+              <p className="text-[9px] font-bold tracking-[0.18em] text-anime-terracotta uppercase mt-1">
                 {filteredCharacters.length} Entities Indexed
               </p>
             </div>
-            <div className="h-6 w-[1px] bg-white/10"></div>
+            <div className="h-6 w-[1px] bg-anime-line"></div>
             <div className="flex gap-2">
               <button
                 onClick={() => setViewMode("3d")}
-                className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${
+                className={`text-[10px] font-bold tracking-[0.15em] px-4 py-2 rounded-full transition-all ${
                   viewMode === "3d"
-                    ? "bg-pink-500 text-white"
-                    : "text-white/40 hover:text-white"
+                    ? "bg-anime-terracotta text-anime-dark"
+                    : "text-anime-cream/40 hover:text-anime-cream"
                 }`}
               >
                 3D VIEW
               </button>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all ${
+                className={`text-[10px] font-bold tracking-[0.15em] px-4 py-2 rounded-full transition-all ${
                   viewMode === "grid"
-                    ? "bg-pink-500 text-white"
-                    : "text-white/40 hover:text-white"
+                    ? "bg-anime-terracotta text-anime-dark"
+                    : "text-anime-cream/40 hover:text-anime-cream"
                 }`}
               >
                 GRID VIEW
               </button>
             </div>
-            <div className="h-6 w-[1px] bg-white/10"></div>
+            <div className="h-6 w-[1px] bg-anime-line"></div>
             <button
               onClick={() => setWireframe(!wireframe)}
-              className={`text-[10px] font-black tracking-widest px-4 py-2 rounded-lg transition-all border ${
+              className={`text-[10px] font-bold tracking-[0.15em] px-4 py-2 rounded-full transition-all border ${
                 wireframe
-                  ? "bg-orange-500/20 border-orange-500 text-orange-500"
-                  : "border-white/10 text-white/40 hover:text-white"
+                  ? "bg-orange-500/10 border-orange-500/50 text-orange-400"
+                  : "border-anime-line text-anime-cream/40 hover:text-anime-cream"
               }`}
             >
-              WIREFRAME (BLENDER)
+              WIREFRAME
             </button>
           </div>
 
@@ -211,16 +214,16 @@ export default function Gallery({ showControls = false }) {
             <div className="relative flex-1 md:w-80">
               <input
                 type="text"
-                placeholder="SEARCH ENTITY..."
+                placeholder="SEARCH ENTITY…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-4 glass-modern rounded-2xl text-[10px] font-black tracking-widest text-white placeholder-white/20 focus:outline-none focus:border-pink-500/50 transition-all uppercase"
+                className="w-full px-6 py-3.5 glass-modern rounded-full text-[10px] font-bold tracking-[0.15em] text-anime-cream placeholder-anime-cream/20 focus:outline-none focus:border-anime-terracotta/50 transition-all uppercase"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-6 py-4 glass-modern rounded-2xl text-[10px] font-black tracking-widest text-white focus:outline-none focus:border-pink-500/50 cursor-pointer uppercase appearance-none"
+              className="px-6 py-3.5 glass-modern rounded-full text-[10px] font-bold tracking-[0.15em] text-anime-cream focus:outline-none focus:border-anime-terracotta/50 cursor-pointer uppercase appearance-none"
             >
               <option value="name">NAME</option>
               <option value="anime">ANIME</option>
@@ -272,33 +275,33 @@ export default function Gallery({ showControls = false }) {
           <div className="relative h-full">
             <Canvas camera={{ position: [0, 2, 8], fov: 50 }} shadows>
               <Suspense fallback={null}>
-                <ambientLight intensity={0.1} />
+                <ambientLight intensity={0.25} />
                 <directionalLight
-                  position={[10, 10, 5]}
-                  intensity={0.5}
+                  position={[6, 8, 5]}
+                  intensity={0.6}
                   castShadow
                 />
                 <SpotLight
-                  position={[0, 10, 0]}
+                  position={[0, 6, 4]}
                   angle={0.5}
                   penumbra={1}
-                  intensity={1.5}
+                  intensity={1.8}
                   castShadow
-                  color="#ff0055"
+                  color="#E1E0CC"
                 />
                 <pointLight
-                  position={[5, 5, -5]}
-                  intensity={1}
-                  color="#7000ff"
+                  position={[4, 3, -3]}
+                  intensity={0.6}
+                  color="#8F8577"
                 />
                 {envPreset !== "none" && (
                   <Environment preset={envPreset} background={envBackground} />
                 )}
                 <ContactShadows
                   position={[0, -0.5, 0]}
-                  opacity={0.4}
+                  opacity={0.55}
                   scale={20}
-                  blur={2}
+                  blur={2.4}
                   far={4}
                 />
                 <CharacterGalleryGrid
@@ -318,50 +321,50 @@ export default function Gallery({ showControls = false }) {
             </Canvas>
 
             {selectedCharacter && (
-              <div className="absolute top-48 md:right-12 right-4 md:w-80 w-[calc(100%-48px)] max-w-xs glass-modern p-6 md:p-8 rounded-[2rem] animate-fade-in border-white/5">
+              <div className="absolute top-48 md:right-12 right-4 md:w-80 w-[calc(100%-48px)] max-w-xs glass-modern p-6 md:p-8 rounded-[1.75rem] animate-fade-in">
                 <button
                   onClick={() => setSelectedCharacter(null)}
                   className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full glass-card-modern hover:bg-white/10 transition-colors"
                 >
                   ✕
                 </button>
-                <h3 className="text-2xl font-black italic tracking-tighter mb-2">
+                <h3 className="text-2xl font-black tracking-tight mb-2">
                   {selectedCharacter.name.toUpperCase()}
                 </h3>
                 {selectedCharacter.anime && (
-                  <p className="text-pink-500 text-[10px] font-bold tracking-widest uppercase mb-6">
+                  <p className="text-anime-terracotta-soft text-[10px] font-bold tracking-[0.18em] uppercase mb-6">
                     {selectedCharacter.anime}
                   </p>
                 )}
-                <p className="text-white/50 text-xs leading-relaxed mb-8">
+                <p className="text-anime-cream/50 text-xs leading-relaxed mb-8">
                   {selectedCharacter.description}
                 </p>
-                <button className="btn-modern btn-primary-modern w-full py-3 text-[10px] tracking-widest">
+                <button className="btn-modern btn-primary-modern w-full py-3 text-[10px] tracking-[0.15em]">
                   INITIALIZE VIEW
                 </button>
               </div>
             )}
 
-            <div className="absolute bottom-6 left-4 md:left-12 right-4 md:right-auto glass-modern p-4 md:p-6 rounded-[2rem] border-white/5 pointer-events-none">
-              <div className="text-[10px] font-black tracking-widest text-white/20 mb-3 uppercase">
-                Neural Interface Controls
+            <div className="absolute bottom-6 left-4 md:left-12 right-4 md:right-auto glass-modern p-4 md:p-6 rounded-[1.5rem] pointer-events-none">
+              <div className="text-[10px] font-bold tracking-[0.15em] text-anime-cream/20 mb-3 uppercase">
+                View Controls
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-1 h-1 bg-pink-500 rounded-full"></div>
-                  <span className="text-[10px] font-bold text-white/40">
+                  <div className="w-1 h-1 bg-anime-terracotta rounded-full"></div>
+                  <span className="text-[10px] font-bold text-anime-cream/40">
                     DRAG TO ROTATE ENTITY
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-1 h-1 bg-pink-500 rounded-full"></div>
-                  <span className="text-[10px] font-bold text-white/40">
+                  <div className="w-1 h-1 bg-anime-terracotta rounded-full"></div>
+                  <span className="text-[10px] font-bold text-anime-cream/40">
                     SCROLL TO ADJUST ZOOM
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-1 h-1 bg-pink-500 rounded-full"></div>
-                  <span className="text-[10px] font-bold text-white/40">
+                  <div className="w-1 h-1 bg-anime-terracotta rounded-full"></div>
+                  <span className="text-[10px] font-bold text-anime-cream/40">
                     CLICK TO SYNC DATA
                   </span>
                 </div>

@@ -9,7 +9,7 @@
   font-size: 48px;
   text-align: center;
   margin: 0 0 60px;
-  background: linear-gradient(90deg, #ff6ea6, #ff9acb, #ffd1e8);
+  background: linear-gradient(90deg, #d97a5c, #de9074, #e8b49b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -20,9 +20,9 @@
 .timeline-section {
   margin-bottom: 80px;
   padding: 32px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(225, 224, 204, 0.03);
   border-radius: 16px;
-  border: 1px solid rgba(255, 110, 166, 0.15);
+  border: 1px solid rgba(217, 122, 92, 0.15);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: fadeInUp 0.6s ease-out backwards;
@@ -30,21 +30,21 @@
 
 .timeline-section:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(255, 110, 166, 0.2);
-  border-color: rgba(255, 110, 166, 0.3);
+  box-shadow: 0 20px 60px rgba(217, 122, 92, 0.15);
+  border-color: rgba(217, 122, 92, 0.3);
 }
 
 .timeline-section h2 {
   font-size: 32px;
   margin: 0 0 16px;
-  color: #ff9acb;
+  color: #de9074;
   animation: slideInLeft 0.6s ease-out;
 }
 
 .timeline-section p {
   font-size: 18px;
   line-height: 1.7;
-  color: #9aa0a6;
+  color: #a1a094;
   margin: 0 0 24px;
 }
 
