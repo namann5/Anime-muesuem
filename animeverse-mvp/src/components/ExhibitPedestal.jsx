@@ -6,37 +6,37 @@ export default function ExhibitPedestal({ position = [0, 0, 0], character }) {
 
   return (
     <group position={position}>
-      {/* Pedestal Base */}
+      {/* Pedestal Base — warm ivory stone */}
       <mesh position={[0, pedestalHeight / 2, 0]} castShadow receiveShadow>
         <cylinderGeometry
           args={[pedestalRadius, pedestalRadius + 0.1, pedestalHeight, 32]}
         />
-        <meshStandardMaterial color="#ffffff" roughness={0.1} metalness={0.3} />
+        <meshStandardMaterial color="#D8D2C4" roughness={0.35} metalness={0.05} />
       </mesh>
 
-      {/* Pedestal Top Platform */}
+      {/* Pedestal Top Platform — warm terracotta inlay */}
       <mesh position={[0, pedestalHeight, 0]} castShadow receiveShadow>
         <cylinderGeometry
           args={[pedestalRadius + 0.05, pedestalRadius + 0.05, 0.1, 32]}
         />
         <meshStandardMaterial
-          color="#ff6ea6"
-          roughness={0.2}
-          metalness={0.5}
-          emissive="#ff6ea6"
-          emissiveIntensity={0.2}
+          color="#C26244"
+          roughness={0.3}
+          metalness={0.35}
+          emissive="#D97A5C"
+          emissiveIntensity={0.15}
         />
       </mesh>
 
-      {/* Spotlight above exhibit */}
+      {/* Warm spotlight above exhibit */}
       <spotLight
         position={[0, 3, 0]}
         angle={0.3}
-        penumbra={0.5}
-        intensity={1.5}
+        penumbra={0.6}
+        intensity={1.6}
         castShadow
         target-position={[0, pedestalHeight, 0]}
-        color="#ffffff"
+        color="#F3EDE0"
       />
 
       {/* Info Plaque */}
@@ -44,9 +44,8 @@ export default function ExhibitPedestal({ position = [0, 0, 0], character }) {
         <group position={[0, 0.1, pedestalRadius + 0.15]}>
           <mesh>
             <planeGeometry args={[1, 0.4]} />
-            <meshStandardMaterial color="#2a2a2a" roughness={0.8} />
+            <meshStandardMaterial color="#2B251F" roughness={0.8} />
           </mesh>
-          {/* Text would be added via HTML overlay or Text component */}
         </group>
       )}
     </group>

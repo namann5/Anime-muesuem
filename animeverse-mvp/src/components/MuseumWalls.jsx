@@ -14,7 +14,7 @@ export default function MuseumWalls() {
         castShadow
       >
         <boxGeometry args={[roomSize, wallHeight, wallThickness]} />
-        <meshStandardMaterial color="#f5f5f5" roughness={0.9} />
+        <meshStandardMaterial color="#E9E5DA" roughness={0.9} />
       </mesh>
 
       {/* South Wall */}
@@ -24,7 +24,7 @@ export default function MuseumWalls() {
         castShadow
       >
         <boxGeometry args={[roomSize, wallHeight, wallThickness]} />
-        <meshStandardMaterial color="#f5f5f5" roughness={0.9} />
+        <meshStandardMaterial color="#E9E5DA" roughness={0.9} />
       </mesh>
 
       {/* East Wall */}
@@ -34,7 +34,7 @@ export default function MuseumWalls() {
         castShadow
       >
         <boxGeometry args={[wallThickness, wallHeight, roomSize]} />
-        <meshStandardMaterial color="#f5f5f5" roughness={0.9} />
+        <meshStandardMaterial color="#E9E5DA" roughness={0.9} />
       </mesh>
 
       {/* West Wall */}
@@ -44,7 +44,7 @@ export default function MuseumWalls() {
         castShadow
       >
         <boxGeometry args={[wallThickness, wallHeight, roomSize]} />
-        <meshStandardMaterial color="#f5f5f5" roughness={0.9} />
+        <meshStandardMaterial color="#E9E5DA" roughness={0.9} />
       </mesh>
 
       {/* Ceiling (optional) */}
@@ -54,7 +54,7 @@ export default function MuseumWalls() {
         receiveShadow
       >
         <planeGeometry args={[roomSize, roomSize]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.8} />
+        <meshStandardMaterial color="#F3EFE6" roughness={0.8} />
       </mesh>
     </group>
   );

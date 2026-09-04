@@ -40,18 +40,21 @@ const ScenePortal = forwardRef(function ScenePortal(_, ref) {
       <pointLight
         ref={lightRef}
         position={[0, 1.5, 0]}
-        color={0xff6ea6}
-        intensity={1}
+        color={0xd97a5c}
+        intensity={1.4}
         distance={6}
       />
 
       <mesh position={[0, 0.8, 0]} ref={torusRef} castShadow>
         <torusGeometry args={[0.8, 0.28, 32, 64]} />
         <MeshWobbleMaterial
-          factor={0.6}
-          speed={1.2}
-          color="#ff6ea6"
-          clearcoat={0.2}
+          factor={0.4}
+          speed={0.9}
+          color="#D97A5C"
+          clearcoat={0.6}
+          clearcoatRoughness={0.25}
+          roughness={0.35}
+          metalness={0.15}
         />
       </mesh>
 
@@ -62,9 +65,9 @@ const ScenePortal = forwardRef(function ScenePortal(_, ref) {
       >
         <planeGeometry args={[15, 15]} />
         <meshStandardMaterial
-          color="#0b0b0f"
+          color="#161618"
           metalness={0.1}
-          roughness={0.95}
+          roughness={0.96}
         />
       </mesh>
     </group>

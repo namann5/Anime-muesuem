@@ -15,9 +15,9 @@ function PageLoader() {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-anime-dark">
       <div className="text-center">
-        <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-anime-pink/30 border-t-anime-pink"></div>
-        <p className="mt-4 animate-pulse text-anime-pink font-medium">
-          Loading...
+        <div className="inline-block h-16 w-16 animate-spin rounded-full border border-anime-terracotta/20 border-t-anime-terracotta"></div>
+        <p className="mt-6 font-serif-accent text-xl tracking-wide text-anime-cream/70 animate-pulse">
+          Entering the collection…
         </p>
       </div>
     </div>
@@ -94,15 +94,16 @@ export default function App() {
 
   return (
     <div>
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-4xl">
-        <div className="glass-modern px-8 py-4 rounded-2xl flex items-center justify-between shadow-2xl border-white/5">
+      <div className="noise-overlay" aria-hidden="true" />
+      <nav className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-4xl">
+        <div className="glass-modern px-6 sm:px-8 py-3.5 rounded-full flex items-center justify-between shadow-2xl">
           <div
-            className="text-xl font-black italic tracking-tighter cursor-pointer group"
+            className="text-lg sm:text-xl font-black tracking-tight cursor-pointer group"
             onClick={() => navigateTo("home")}
           >
             ANIME
-            <span className="text-pink-500 group-hover:text-white transition-colors">
-              VERSE
+            <span className="font-serif-accent font-normal text-anime-terracotta-soft group-hover:text-anime-cream transition-colors">
+              verse
             </span>
           </div>
 
@@ -122,17 +123,17 @@ export default function App() {
                     ? handleGalleryClick()
                     : navigateTo(item.id)
                 }
-                className={`text-[10px] font-black tracking-[0.2em] uppercase transition-all relative py-2 ${
+                className={`text-[10px] font-bold tracking-[0.18em] uppercase transition-all relative py-2 ${
                   route === item.id ||
                   (item.id === "watch-anime" && route === "anime-detail")
-                    ? "text-pink-500"
-                    : "text-white/40 hover:text-white"
+                    ? "text-anime-cream"
+                    : "text-anime-cream/40 hover:text-anime-cream"
                 }`}
               >
                 {item.label}
                 {(route === item.id ||
                   (item.id === "watch-anime" && route === "anime-detail")) && (
-                  <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-pink-500 rounded-full animate-pulse"></div>
+                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-[2px] w-5 bg-anime-terracotta rounded-full"></div>
                 )}
               </button>
             ))}
@@ -140,7 +141,7 @@ export default function App() {
 
           <div className="flex items-center gap-4">
             <button
-              className="md:hidden glass-card-modern p-2 rounded-lg text-white"
+              className="md:hidden glass-card-modern p-2 rounded-lg text-anime-cream"
               aria-label="Toggle navigation menu"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
             >
@@ -158,15 +159,15 @@ export default function App() {
                 />
               </svg>
             </button>
-            <div className="hidden md:block h-6 w-[1px] bg-white/10 mx-2"></div>
-            <button className="hidden md:block text-[10px] font-black tracking-widest text-white/40 hover:text-pink-500 transition-colors">
-              SIGN IN
+            <div className="hidden md:block h-6 w-[1px] bg-anime-line mx-2"></div>
+            <button className="hidden md:block text-[10px] font-bold tracking-[0.18em] uppercase text-anime-cream/40 hover:text-anime-terracotta-soft transition-colors">
+              Sign in
             </button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 glass-modern rounded-2xl border-white/5 px-4 py-3">
+          <div className="md:hidden mt-3 glass-modern rounded-2xl px-4 py-3">
             <div className="grid gap-2">
               {[
                 { id: "home", label: "Home" },
@@ -183,11 +184,11 @@ export default function App() {
                       ? handleGalleryClick()
                       : navigateTo(item.id)
                   }
-                  className={`text-left rounded-lg px-3 py-2 text-xs font-black tracking-[0.15em] uppercase transition-colors ${
+                  className={`text-left rounded-lg px-3 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors ${
                     route === item.id ||
                     (item.id === "watch-anime" && route === "anime-detail")
-                      ? "text-pink-500 bg-white/5"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
+                      ? "text-anime-terracotta bg-white/5"
+                      : "text-anime-cream/60 hover:text-anime-cream hover:bg-white/5"
                   }`}
                 >
                   {item.label}

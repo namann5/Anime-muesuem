@@ -184,9 +184,9 @@ export default function ModelViewer({
           <mesh position={[0, -0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[0.62, 0.03, 12, 36]} />
             <meshStandardMaterial
-              color="#ec4899"
-              emissive="#ec4899"
-              emissiveIntensity={0.35}
+              color="#D97A5C"
+              emissive="#D97A5C"
+              emissiveIntensity={0.3}
               metalness={0.5}
               roughness={0.2}
             />
