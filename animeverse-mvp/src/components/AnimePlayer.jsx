@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { getStreamingLinks, BACKEND_URL } from "../api/streamingApi";
+import {
+  getStreamingLinks,
+  getPublicStreamWatch,
+  BACKEND_URL,
+} from "../api/streamingApi";
 import HLSPlayer from "./HLSPlayer";
 
 export default function AnimePlayer({
   episodeId,
+  sourceBase,
   episodeNumber,
   animeTitle,
   onNext,
@@ -28,24 +33,26 @@ export default function AnimePlayer({
 
     try {
       // 1. Set fallback iframe URL
-      const embedUrl = `https://animepahe.com/play/${episodeId}`;
-      setIframeUrl(embedUrl);
+      setIframeUrl(
+        sourceBase
+          ? `https://gogoanimehd.io/watch/${episodeId}`
+          : `https://animepahe.com/play/${episodeId}`
+      );
 
-      // 2. Try to get HLS streaming links from backend
-      const data = await getStreamingLinks(episodeId);
+      // 2. Attempt to get HLS streaming links. Prefer the public mirror when active.
+      const data = sourceBase
+        ? await getPublicStreamWatch(sourceBase, episodeId)
+        : await getStreamingLinks(episodeId);
 
       if (data.sources && data.sources.length > 0) {
-        // Use the highest quality source (usually the last or specifically marked)
-        // For AnimePahe, 720p/1080p is preferred.
         const bestSource =
-          data.sources.find((s) => s.quality.includes("1080")) ||
-          data.sources.find((s) => s.quality.includes("720")) ||
+          data.sources.find((s) => (s.quality || "").includes("1080")) ||
+          data.sources.find((s) => (s.quality || "").includes("720")) ||
           data.sources[0];
 
-        // Use proxy to bypass potential CORS/Referer issues
-        const proxiedUrl = `${BACKEND_URL}/proxy?url=${encodeURIComponent(
-          bestSource.url
-        )}`;
+        const proxiedUrl = sourceBase
+          ? bestSource.url
+          : `${BACKEND_URL}/proxy?url=${encodeURIComponent(bestSource.url)}`;
 
         setStreamUrl(proxiedUrl);
         setPlayerType("hls");
@@ -55,6 +62,7 @@ export default function AnimePlayer({
     } catch (err) {
       console.error("Failed to load stream:", err);
       setPlayerType("iframe");
+      setError(err.message || "Stream unavailable");
     } finally {
       setLoading(false);
     }
