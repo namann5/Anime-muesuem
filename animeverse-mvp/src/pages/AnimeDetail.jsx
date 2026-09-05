@@ -6,6 +6,7 @@ import {
   getAnimeRecommendations,
 } from "../services/animeService";
 import { findAnimeByTitle, getAnimeInfo } from "../api/anilistApi";
+import { getPublicStreamInfo } from "../api/streamingApi";
 import AnimePlayer from "../components/AnimePlayer";
 import EpisodeList from "../components/EpisodeList";
 
@@ -71,6 +72,24 @@ export default function AnimeDetail({ malId, onBack }) {
     try {
       setLoadingEpisodes(true);
       setStreamError(null);
+
+      // 1. Hunt public mirrors first (works for ANY visitor, no server needed)
+      const publicRes = await getPublicStreamInfo(anime?.malId);
+      if (publicRes && publicRes.info.episodes?.length > 0) {
+        const eps = publicRes.info.episodes.map((ep) => ({
+          ...ep,
+          _base: publicRes.base,
+        }));
+        setStreamingData(publicRes.info);
+        setEpisodes(eps);
+        if (eps.length > 0) {
+          setCurrentEpisode(eps[0]);
+          setCurrentEpisodeNumber(1);
+          return;
+        }
+      }
+
+      // 2. Fall back to the local AnimePahe backend
       const animepahe = await findAnimeByTitle(titleEnglish, titleRomaji);
 
       if (animepahe) {
@@ -254,6 +273,7 @@ export default function AnimeDetail({ malId, onBack }) {
                 <div className="glass-modern p-2 rounded-[2rem] overflow-hidden">
                   <AnimePlayer
                     episodeId={currentEpisode.id}
+                    sourceBase={currentEpisode._base || null}
                     episodeNumber={currentEpisodeNumber}
                     animeTitle={anime.title}
                     onNext={handleNextEpisode}
@@ -270,7 +290,7 @@ export default function AnimeDetail({ malId, onBack }) {
                   </h3>
                   <p className="text-white/40 max-w-md">
                     {streamError ||
-                      "We couldn't find a compatible video source for this title. Please try again later."}
+                      "We couldn't find a compatible video source for this title. Please try again later, or check again in a moment — streaming hosts rotate frequently."}
                   </p>
                 </div>
               )}
