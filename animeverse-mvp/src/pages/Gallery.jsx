@@ -273,20 +273,19 @@ export default function Gallery({ showControls = false }) {
       <main className="flex-1 relative overflow-hidden">
         {viewMode === "3d" ? (
           <div className="relative h-full">
-            <Canvas camera={{ position: [0, 2, 8], fov: 50 }} shadows>
+            <Canvas
+              dpr={[1, 1.5]}
+              camera={{ position: [0, 2, 8], fov: 50 }}
+              shadows
+            >
               <Suspense fallback={null}>
                 <ambientLight intensity={0.25} />
-                <directionalLight
-                  position={[6, 8, 5]}
-                  intensity={0.6}
-                  castShadow
-                />
+                <directionalLight position={[6, 8, 5]} intensity={0.6} castShadow />
                 <SpotLight
                   position={[0, 6, 4]}
                   angle={0.5}
                   penumbra={1}
                   intensity={1.8}
-                  castShadow
                   color="#E1E0CC"
                 />
                 <pointLight

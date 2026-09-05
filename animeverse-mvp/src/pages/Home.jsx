@@ -1,13 +1,34 @@
-import React, { Suspense, useRef, useEffect } from "react";
+import React, { Suspense, useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 import gsap from "gsap";
 import ScenePortal from "../components/ScenePortal";
 
+function useInView(ref, rootMargin = "200px") {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ref, rootMargin]);
+  return inView;
+}
+
 export default function Home({ onEnter }) {
   const containerRef = useRef();
   const heroRef = useRef();
   const bentoRef = useRef();
+  const previewRef = useRef();
+  const previewInView = useInView(previewRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -75,10 +96,10 @@ export default function Home({ onEnter }) {
       ref={containerRef}
       className="relative min-h-screen mesh-gradient-modern selection:bg-anime-terracotta/30"
     >
-      {/* Warm ambient background */}
+      {/* Warm ambient background (static — no animation/blur churn to keep the page cheap) */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-anime-terracotta/[0.06] blur-[130px] rounded-full animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-anime-terracotta-soft/[0.05] blur-[130px] rounded-full animate-pulse delay-700"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-anime-terracotta/[0.06] blur-[90px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-anime-terracotta-soft/[0.05] blur-[90px] rounded-full"></div>
       </div>
 
       <div className="relative z-10">
@@ -190,31 +211,35 @@ export default function Home({ onEnter }) {
         </section>
 
         {/* Immersive Preview */}
-        <section className="container mx-auto px-4 md:px-6 py-12 md:py-24">
+        <section
+          ref={previewRef}
+          className="container mx-auto px-4 md:px-6 py-12 md:py-24"
+        >
           <div className="glass-modern rounded-[2rem] md:rounded-[3rem] p-4 h-[320px] md:h-[600px] relative overflow-hidden group">
             <div className="absolute inset-0 z-0">
-              <Canvas shadows camera={{ position: [0, 1.5, 5], fov: 50 }}>
-                <ambientLight intensity={0.35} />
-                <directionalLight
-                  position={[5, 8, 5]}
-                  intensity={0.5}
-                  castShadow
-                />
-                <spotLight
-                  position={[0, 5, 3]}
-                  angle={0.3}
-                  penumbra={1}
-                  intensity={0.9}
-                  color="#E1E0CC"
-                  castShadow
-                />
-                <Suspense fallback={null}>
-                  <Float speed={2} rotationIntensity={0.4} floatIntensity={0.4}>
-                    <ScenePortal />
-                  </Float>
-                </Suspense>
-                <OrbitControls enableZoom={false} enablePan={false} />
-              </Canvas>
+              {previewInView && (
+                <Canvas
+                  shadows={false}
+                  dpr={[1, 1.5]}
+                  camera={{ position: [0, 1.5, 5], fov: 50 }}
+                >
+                  <ambientLight intensity={0.35} />
+                  <directionalLight position={[5, 8, 5]} intensity={0.5} />
+                  <spotLight
+                    position={[0, 5, 3]}
+                    angle={0.3}
+                    penumbra={1}
+                    intensity={0.9}
+                    color="#E1E0CC"
+                  />
+                  <Suspense fallback={null}>
+                    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.4}>
+                      <ScenePortal />
+                    </Float>
+                  </Suspense>
+                  <OrbitControls enableZoom={false} enablePan={false} />
+                </Canvas>
+              )}
             </div>
 
             <div className="absolute top-10 left-8 sm:top-12 sm:left-12 z-10 max-w-sm pointer-events-none">

@@ -42,8 +42,8 @@ export default function PaymentSuccess() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6 mesh-gradient-modern">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[30%] left-[20%] w-[40%] h-[40%] bg-green-600/20 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[20%] right-[20%] w-[30%] h-[30%] bg-violet-600/20 blur-[120px] rounded-full"></div>
+        <div className="absolute top-[30%] left-[20%] w-[40%] h-[40%] bg-green-600/20 blur-[80px] rounded-full"></div>
+        <div className="absolute bottom-[20%] right-[20%] w-[30%] h-[30%] bg-violet-600/20 blur-[70px] rounded-full"></div>
       </div>
 
       <div className="relative z-10 text-center max-w-lg">

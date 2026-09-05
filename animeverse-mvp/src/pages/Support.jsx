@@ -25,8 +25,8 @@ export default function Support() {
       className="relative min-h-screen mesh-gradient-modern selection:bg-pink-500/30 pt-32 pb-20"
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] right-[-5%] w-[35%] h-[35%] bg-pink-500/8 blur-[100px] rounded-full"></div>
-        <div className="absolute bottom-[10%] left-[-5%] w-[30%] h-[30%] bg-purple-500/8 blur-[100px] rounded-full"></div>
+        <div className="absolute top-[10%] right-[-5%] w-[35%] h-[35%] bg-pink-500/8 blur-[70px] rounded-full"></div>
+        <div className="absolute bottom-[10%] left-[-5%] w-[30%] h-[30%] bg-purple-500/8 blur-[70px] rounded-full"></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10 support-content">
