@@ -105,7 +105,7 @@ export default function AnimeDetail({ malId, onBack }) {
     } catch (err) {
       console.error("Failed to load episodes:", err);
       setStreamError(
-        "The streaming server couldn't be reached. Make sure the backend is running (cd server && npm start), or try again later — the AnimePahe domain often rotates."
+        "No streaming source is reachable right now — anime hosts are experiencing an outage. You can still watch this title on a partner site below, or try the in-app player again later."
       );
     } finally {
       setLoadingEpisodes(false);
