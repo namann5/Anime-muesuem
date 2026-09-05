@@ -168,6 +168,17 @@ export default function AnimeDetail({ malId, onBack }) {
   const bannerImage =
     anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url;
 
+  const watchQuery = encodeURIComponent(
+    anime.titleEnglish || anime.titleRomaji || anime.title
+  );
+  const watchLinks = [
+    { name: "AnimePahe", url: `https://animepahe.com/anime?search=${watchQuery}` },
+    { name: "HiAnime", url: `https://hianime.to/search?keyword=${watchQuery}` },
+    { name: "Gogoanime", url: `https://gogoanimehd.io/search.html?keyword=${watchQuery}` },
+    { name: "KissKh", url: `https://kisskh.co/Search?keyword=${watchQuery}` },
+    { name: "Zoro", url: `https://zoro.to/search?keyword=${watchQuery}` },
+  ];
+
   return (
     <div
       ref={containerRef}
@@ -283,15 +294,34 @@ export default function AnimeDetail({ malId, onBack }) {
                   />
                 </div>
               ) : (
-                <div className="aspect-video glass-modern rounded-3xl flex flex-col items-center justify-center p-12 text-center">
+                <div className="aspect-video glass-modern rounded-3xl flex flex-col items-center justify-center p-8 md:p-12 text-center">
                   <div className="text-4xl mb-6">🚫</div>
                   <h3 className="text-xl font-bold mb-2">
                     Streaming Unavailable
                   </h3>
-                  <p className="text-white/40 max-w-md">
+                  <p className="text-white/40 max-w-md mb-8">
                     {streamError ||
                       "We couldn't find a compatible video source for this title. Please try again later, or check again in a moment — streaming hosts rotate frequently."}
                   </p>
+
+                  <div className="w-full max-w-md">
+                    <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-anime-cream/30 mb-3">
+                      Watch directly on a partner site
+                    </div>
+                    <div className="flex flex-wrap justify-center gap-2.5">
+                      {watchLinks.map((link) => (
+                        <a
+                          key={link.name}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 glass-card-modern rounded-xl text-xs font-bold text-anime-cream/80 border border-anime-line hover:border-anime-terracotta/50 hover:text-anime-cream transition-all hover:-translate-y-0.5"
+                        >
+                          {link.name} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
