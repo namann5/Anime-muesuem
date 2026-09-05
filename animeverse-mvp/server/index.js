@@ -23,6 +23,7 @@ const ANIMEPAHE_DOMAINS = [
 
 async function findWorkingDomain() {
     // Probe every domain concurrently, capped at ~6s each, pick whichever succeeds first.
+    // A domain only counts if it serves the REAL API JSON (clones return HTML to /api).
     const probes = ANIMEPAHE_DOMAINS.map(async (domain) => {
         const res = await axios.get(`${domain}/api?m=airing`, {
             timeout: 6000,
@@ -31,24 +32,25 @@ async function findWorkingDomain() {
                 'Referer': domain + '/',
             },
         });
-        if (res.status === 200) return domain;
-        throw new Error(`HTTP ${res.status}`);
+        const ct = String(res.headers['content-type'] || '');
+        if (res.status === 200 && ct.includes('application/json')) return domain;
+        throw new Error(`not-real-api (${res.status} ${ct})`);
     });
 
     const firstSuccess = new Promise((resolve) => {
         probes.forEach((p) => p.then(resolve, () => {}));
     });
     const hardCap = new Promise((resolve) =>
-        setTimeout(() => resolve(ANIMEPAHE_DOMAINS[4]), 12000)
+        setTimeout(() => resolve(null), 12000)
     );
 
     const domain = await Promise.race([firstSuccess, hardCap]);
-    if (domain.startsWith('https://')) {
+    if (domain && domain.startsWith('https://')) {
         console.log(`✅ AnimePahe domain reachable: ${domain}`);
         return domain;
     }
-    console.warn('⚠️ No AnimePahe domain reachable, defaulting to .ru');
-    return domain;
+    console.warn('⚠️ No real AnimePahe API domain reachable, defaulting to .ru');
+    return ANIMEPAHE_DOMAINS[4];
 }
 
 // Dynamic import for ESM-only Consumet library
@@ -82,6 +84,18 @@ async function initProvider() {
 
 initProvider();
 
+// Wait for the provider to finish probing on cold start (serverless-friendly):
+// the first request may arrive while initProvider is still running.
+async function waitForProvider(timeoutMs = 13000) {
+    if (providerReady) return true;
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+        if (providerReady) return true;
+        await new Promise((r) => setTimeout(r, 250));
+    }
+    return providerReady;
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -108,14 +122,21 @@ app.get('/', (req, res) => {
     `);
 });
 
+// Express router for all streaming API routes. Mounted at BOTH /api and /
+// so it works regardless of how the host strips the /api prefix.
+const apiRouter = express.Router();
+
+apiRouter.get('/health', (req, res) => {
+    res.json({ status: 'ok', provider: 'AnimePahe', ready: providerReady });
+});
+
 // Search Anime
-app.get('/api/search', async (req, res) => {
+apiRouter.get('/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.status(400).json({ error: 'Query parameter "q" is required' });
-    if (!providerReady) return res.status(503).json({ error: 'Provider not ready' });
+    if (!(await waitForProvider())) return res.status(503).json({ error: 'Provider not ready' });
 
     try {
-        console.log(`🔍 Searching for: ${query}`);
         const results = await animepahe.search(query);
         res.json(results || { results: [] });
     } catch (error) {
@@ -125,12 +146,11 @@ app.get('/api/search', async (req, res) => {
 });
 
 // Get Anime Info (including episodes)
-app.get('/api/info/:id', async (req, res) => {
+apiRouter.get('/info/:id', async (req, res) => {
     const id = req.params.id;
-    if (!providerReady) return res.status(503).json({ error: 'Provider not ready' });
-    
+    if (!(await waitForProvider())) return res.status(503).json({ error: 'Provider not ready' });
+
     try {
-        console.log(`ℹ️ Fetching info for: ${id}`);
         const info = await animepahe.fetchAnimeInfo(id);
         res.json(info || { episodes: [] });
     } catch (error) {
@@ -140,13 +160,12 @@ app.get('/api/info/:id', async (req, res) => {
 });
 
 // Get Episode Streaming Links
-app.get('/api/watch/:episodeId', async (req, res) => {
+apiRouter.get('/watch/:episodeId', async (req, res) => {
     // Decode the episode ID to handle special characters (AnimePahe uses slashes in episode IDs)
     const episodeId = decodeURIComponent(req.params.episodeId);
-    if (!providerReady) return res.status(503).json({ error: 'Provider not ready' });
-    
+    if (!(await waitForProvider())) return res.status(503).json({ error: 'Provider not ready' });
+
     try {
-        console.log(`📺 Fetching sources for episode: ${episodeId}`);
         const sources = await animepahe.fetchEpisodeSources(episodeId);
         res.json(sources || { sources: [] });
     } catch (error) {
@@ -156,7 +175,7 @@ app.get('/api/watch/:episodeId', async (req, res) => {
 });
 
 // Proxy endpoint to bypass CORS for HLS streams
-app.get('/api/proxy', async (req, res) => {
+apiRouter.get('/proxy', async (req, res) => {
     const url = req.query.url;
 
     if (!url) {
@@ -164,8 +183,6 @@ app.get('/api/proxy', async (req, res) => {
     }
 
     try {
-        console.log('Proxying request to:', url);
-
         const response = await axios.get(url, {
             responseType: 'stream',
             headers: {
@@ -175,17 +192,14 @@ app.get('/api/proxy', async (req, res) => {
             }
         });
 
-        // Set appropriate headers
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-        // Copy content type from original response
         if (response.headers['content-type']) {
             res.setHeader('Content-Type', response.headers['content-type']);
         }
 
-        // Stream the response
         response.data.pipe(res);
     } catch (error) {
         console.error('Proxy error:', error.message);
@@ -193,12 +207,21 @@ app.get('/api/proxy', async (req, res) => {
     }
 });
 
+app.use('/api', apiRouter);
+app.use('/', apiRouter);
+
 // Only listen directly when run as a standalone server (not a serverless function)
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`🚀 Backend server running on http://localhost:${PORT}`);
     });
 }
+
+// Error handler: always respond with the underlying message so failures are debuggable
+app.use((err, req, res, next) => {
+    console.error('💥 Unhandled error:', err && err.stack ? err.stack : err);
+    res.status(500).json({ error: 'Internal server error', message: err && err.message });
+});
 
 // Export for serverless adapters (Vercel @vercel/node, etc.)
 module.exports = app;
