@@ -24,6 +24,7 @@ export default function AnimeDetail({ malId, onBack }) {
   const [currentEpisode, setCurrentEpisode] = useState(null);
   const [currentEpisodeNumber, setCurrentEpisodeNumber] = useState(1);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+  const [streamError, setStreamError] = useState(null);
 
   useEffect(() => {
     loadAnimeData();
@@ -69,6 +70,7 @@ export default function AnimeDetail({ malId, onBack }) {
   async function loadEpisodes(titleEnglish, titleRomaji) {
     try {
       setLoadingEpisodes(true);
+      setStreamError(null);
       const animepahe = await findAnimeByTitle(titleEnglish, titleRomaji);
 
       if (animepahe) {
@@ -83,6 +85,9 @@ export default function AnimeDetail({ malId, onBack }) {
       }
     } catch (err) {
       console.error("Failed to load episodes:", err);
+      setStreamError(
+        "The streaming server couldn't be reached. Make sure the backend is running (cd server && npm start), or try again later — the AnimePahe domain often rotates."
+      );
     } finally {
       setLoadingEpisodes(false);
     }
@@ -264,8 +269,8 @@ export default function AnimeDetail({ malId, onBack }) {
                     Streaming Unavailable
                   </h3>
                   <p className="text-white/40 max-w-md">
-                    We couldn't find a compatible video source for this title.
-                    Please try again later.
+                    {streamError ||
+                      "We couldn't find a compatible video source for this title. Please try again later."}
                   </p>
                 </div>
               )}

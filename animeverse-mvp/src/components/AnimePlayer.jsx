@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getStreamingLinks } from "../api/streamingApi";
+import { getStreamingLinks, BACKEND_URL } from "../api/streamingApi";
 import HLSPlayer from "./HLSPlayer";
 
 export default function AnimePlayer({
@@ -43,9 +43,7 @@ export default function AnimePlayer({
           data.sources[0];
 
         // Use proxy to bypass potential CORS/Referer issues
-        // BACKEND_URL in streamingApi.js is http://localhost:3001/api
-        const backendBase = "http://localhost:3001/api";
-        const proxiedUrl = `${backendBase}/proxy?url=${encodeURIComponent(
+        const proxiedUrl = `${BACKEND_URL}/proxy?url=${encodeURIComponent(
           bestSource.url
         )}`;
 
@@ -69,8 +67,8 @@ export default function AnimePlayer({
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-anime-dark z-20">
             <div className="flex flex-col items-center gap-4 max-w-md px-6">
-              <div className="w-12 h-12 border-4 border-anime-pink/20 border-t-anime-pink rounded-full animate-spin"></div>
-              <span className="text-white/40 text-xs font-bold tracking-widest uppercase animate-pulse">
+              <div className="w-12 h-12 border-4 border-anime-terracotta/20 border-t-anime-terracotta rounded-full animate-spin"></div>
+              <span className="text-anime-cream/50 text-xs font-bold tracking-widest uppercase animate-pulse">
                 Initializing {playerType.toUpperCase()} Player
               </span>
             </div>
@@ -95,12 +93,12 @@ export default function AnimePlayer({
       {/* Episode Info & Controls */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
         <div className="flex flex-col">
-          <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+          <span className="text-[10px] text-anime-cream/40 font-black uppercase tracking-widest">
             Now Watching
           </span>
-          <div className="text-white font-black text-xl flex items-center gap-2">
-            Episode <span className="text-anime-pink">{episodeNumber}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/60 ml-2 font-normal">
+          <div className="text-anime-cream font-black text-xl flex items-center gap-2">
+            Episode <span className="text-anime-terracotta">{episodeNumber}</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-anime-cream/60 ml-2 font-normal">
               {playerType === "hls" ? "AD-FREE HLS" : "EXTERNAL IFRAME"}
             </span>
           </div>
@@ -111,7 +109,7 @@ export default function AnimePlayer({
             onClick={() =>
               setPlayerType(playerType === "hls" ? "iframe" : "hls")
             }
-            className="p-2.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 text-white/60 hover:text-white transition-all text-[10px] font-bold"
+            className="p-2.5 bg-white/5 hover:bg-white/10 rounded-lg border border-anime-line text-anime-cream/60 hover:text-anime-cream transition-all text-[10px] font-bold"
             title="Switch Player Type"
           >
             {playerType === "hls" ? "USE IFRAME" : "USE HLS"}
@@ -120,7 +118,7 @@ export default function AnimePlayer({
           <button
             onClick={onPrevious}
             disabled={!hasPrevious}
-            className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed px-5 py-2.5 rounded-lg border border-white/10 text-white font-bold transition-all active:scale-95"
+            className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed px-5 py-2.5 rounded-lg border border-anime-line text-anime-cream font-bold transition-all active:scale-95"
           >
             <svg
               className="w-4 h-4 transition-transform group-hover:-translate-x-1"
@@ -141,7 +139,7 @@ export default function AnimePlayer({
           <button
             onClick={onNext}
             disabled={!hasNext}
-            className="group flex items-center gap-2 bg-anime-pink text-white disabled:opacity-20 disabled:cursor-not-allowed px-5 py-2.5 rounded-lg font-black hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-anime-pink/20"
+            className="group flex items-center gap-2 bg-anime-terracotta text-anime-dark disabled:opacity-20 disabled:cursor-not-allowed px-5 py-2.5 rounded-lg font-black hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-anime-terracotta/20"
           >
             Next
             <svg
@@ -162,11 +160,11 @@ export default function AnimePlayer({
       </div>
 
       {/* Info Banner */}
-      <div className="bg-gradient-to-br from-anime-pink/5 to-purple-500/5 border border-anime-pink/20 p-4 rounded-xl">
+      <div className="bg-gradient-to-br from-anime-terracotta/10 to-anime-dark-card border border-anime-terracotta/20 p-4 rounded-xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-anime-pink/20 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-anime-terracotta/20 flex items-center justify-center flex-shrink-0">
             <svg
-              className="w-5 h-5 text-anime-pink"
+              className="w-5 h-5 text-anime-terracotta"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -180,13 +178,13 @@ export default function AnimePlayer({
             </svg>
           </div>
           <div className="flex-1">
-            <h4 className="text-white font-bold text-sm mb-1">
+            <h4 className="text-anime-cream font-bold text-sm mb-1">
               🎬{" "}
               {playerType === "hls"
                 ? "Streaming ad-free with HLS"
                 : "Streaming via AnimePahe Embed"}
             </h4>
-            <p className="text-white/60 text-xs leading-relaxed">
+            <p className="text-anime-cream/60 text-xs leading-relaxed">
               {playerType === "hls"
                 ? "Enjoy a clean viewing experience without ads. If the player doesn't load, try switching to 'USE IFRAME'."
                 : "If you encounter ads, we recommend using an ad-blocker. Switch to 'USE HLS' for an ad-free experience."}

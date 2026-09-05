@@ -71,8 +71,8 @@ export default function Premium() {
   return (
     <div className="min-h-screen pt-20 md:pt-32 pb-20 px-4 md:px-6 mesh-gradient-modern">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] left-[10%] w-[30%] h-[30%] bg-violet-600/20 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] bg-pink-600/20 blur-[120px] rounded-full"></div>
+        <div className="absolute top-[20%] left-[10%] w-[30%] h-[30%] bg-violet-600/20 blur-[70px] rounded-full"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] bg-pink-600/20 blur-[70px] rounded-full"></div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto">

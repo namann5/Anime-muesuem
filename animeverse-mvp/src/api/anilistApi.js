@@ -2,6 +2,7 @@ import {
   searchStreamingAnime,
   getStreamingInfo,
   getStreamingLinks,
+  isBackendError,
 } from "./streamingApi";
 
 /**
@@ -265,6 +266,8 @@ async function searchAnimePahe(query) {
     }
     return null;
   } catch (error) {
+    // Backend-level failures (server offline, provider error) must surface so the UI can explain
+    if (isBackendError(error)) throw error;
     console.warn("AnimePahe search error:", error);
     return null;
   }

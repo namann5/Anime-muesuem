@@ -125,6 +125,7 @@ export default function Museum({ animeFilter }) {
       <main className="flex-1 relative">
         <Canvas
           id="museum-canvas"
+          dpr={[1, 1.25]}
           camera={{ position: [0, 1.7, 5], fov: 75 }}
           shadows
         >
