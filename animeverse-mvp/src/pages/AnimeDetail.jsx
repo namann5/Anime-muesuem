@@ -26,6 +26,7 @@ export default function AnimeDetail({ malId, onBack }) {
   const [currentEpisodeNumber, setCurrentEpisodeNumber] = useState(1);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
   const [streamError, setStreamError] = useState(null);
+  const [embedPartner, setEmbedPartner] = useState(null);
 
   useEffect(() => {
     loadAnimeData();
@@ -306,20 +307,22 @@ export default function AnimeDetail({ malId, onBack }) {
 
                   <div className="w-full max-w-md">
                     <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-anime-cream/30 mb-3">
-                      Watch directly on a partner site
+                      Watch here — plays inside this site
                     </div>
                     <div className="flex flex-wrap justify-center gap-2.5">
                       {watchLinks.map((link) => (
-                        <a
+                        <button
                           key={link.name}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 glass-card-modern rounded-xl text-xs font-bold text-anime-cream/80 border border-anime-line hover:border-anime-terracotta/50 hover:text-anime-cream transition-all hover:-translate-y-0.5"
+                          onClick={() => setEmbedPartner(link)}
+                          className="px-4 py-2 glass-card-modern rounded-xl text-xs font-bold text-anime-cream/80 border border-anime-line hover:border-anime-terracotta/50 hover:text-anime-cream transition-all hover:-translate-y-0.5 cursor-pointer"
                         >
-                          {link.name} ↗
-                        </a>
+                          {link.name} ▶
+                        </button>
                       ))}
+                    </div>
+                    <div className="mt-3 text-[11px] text-anime-cream/25 font-medium">
+                      Opens the episode player here. If a site refuses embedding, use
+                      "Open in new tab" inside it.
                     </div>
                   </div>
                 </div>
@@ -426,6 +429,43 @@ export default function AnimeDetail({ malId, onBack }) {
           </div>
         )}
       </main>
+
+      {/* In-site partner player modal */}
+      {embedPartner && (
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 detail-fade-in">
+          <div className="w-full max-w-5xl glass-modern rounded-3xl overflow-hidden p-3">
+            <div className="flex items-center justify-between gap-3 px-2 pb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-anime-terracotta">
+                  Playing on {embedPartner.name}
+                </span>
+                <a
+                  href={embedPartner.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] font-bold tracking-[0.15em] uppercase text-anime-cream/50 hover:text-anime-cream transition-colors"
+                >
+                  Open in new tab ↗
+                </a>
+              </div>
+              <button
+                onClick={() => setEmbedPartner(null)}
+                className="p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-anime-line text-anime-cream/60 hover:text-anime-cream transition-all text-sm font-bold cursor-pointer"
+              >
+                ✕ Close
+              </button>
+            </div>
+            <iframe
+              src={embedPartner.url}
+              className="w-full aspect-video bg-black rounded-2xl border-0"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              referrerPolicy="no-referrer"
+              title={`Watch ${anime.title} on ${embedPartner.name}`}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
