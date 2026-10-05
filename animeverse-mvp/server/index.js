@@ -1,6 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const {
+    assertPublicUrl,
+    resolveRedirect,
+    MAX_PROXY_REDIRECTS,
+    MAX_PROXY_BYTES,
+    PROXY_TIMEOUT_MS,
+    REJECT_INVALID_URL,
+    REJECT_SCHEME,
+    REJECT_DNS,
+    REJECT_PRIVATE,
+} = require('./ssrf-guard');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -174,7 +185,12 @@ apiRouter.get('/watch/:episodeId', async (req, res) => {
     }
 });
 
-// Proxy endpoint to bypass CORS for HLS streams
+// ---------------------------------------------------------------------------
+// SSRF guard lives in ./ssrf-guard so it stays unit-testable in isolation.
+// ---------------------------------------------------------------------------
+// Proxy endpoint to bypass CORS for HLS streams.
+// Every hop is re-validated so a public host cannot bounce us into a private
+// range, and the body is capped so this cannot be used as a free relay.
 apiRouter.get('/proxy', async (req, res) => {
     const url = req.query.url;
 
@@ -182,15 +198,55 @@ apiRouter.get('/proxy', async (req, res) => {
         return res.status(400).json({ error: 'URL parameter is required' });
     }
 
+    const PROXY_REJECTED = new Set([
+        REJECT_INVALID_URL,
+        REJECT_SCHEME,
+        REJECT_DNS,
+        REJECT_PRIVATE,
+    ]);
+
+    let target;
     try {
-        const response = await axios.get(url, {
-            responseType: 'stream',
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer': 'https://animepahe.com/',
-                'Origin': 'https://animepahe.com'
+        target = await assertPublicUrl(url);
+    } catch (err) {
+        if (!PROXY_REJECTED.has(err.message)) console.error('Proxy validation error:', err.message);
+        return res.status(400).json({ error: err.message });
+    }
+
+    try {
+        // Follow redirects manually so each new target is validated too.
+        let hops = 0;
+        let response;
+        for (;;) {
+            response = await axios.get(target.toString(), {
+                responseType: 'stream',
+                timeout: PROXY_TIMEOUT_MS,
+                maxRedirects: 0,
+                validateStatus: (s) => s >= 200 && s < 400,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Referer': 'https://animepahe.com/',
+                    'Origin': 'https://animepahe.com'
+                }
+            });
+
+            const location = response.headers.location;
+            if (response.status >= 300 && response.status < 400 && location) {
+                if (++hops > MAX_PROXY_REDIRECTS) {
+                    response.data.resume();
+                    return res.status(502).json({ error: 'Too many redirects' });
+                }
+                try {
+                    target = await resolveRedirect(location, target);
+                } catch {
+                    response.data.resume();
+                    return res.status(400).json({ error: 'Redirect target is not publicly routable' });
+                }
+                response.data.resume();
+                continue;
             }
-        });
+            break;
+        }
 
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -200,10 +256,25 @@ apiRouter.get('/proxy', async (req, res) => {
             res.setHeader('Content-Type', response.headers['content-type']);
         }
 
+        let sent = 0;
+        response.data.on('data', (chunk) => {
+            sent += chunk.length;
+            if (sent > MAX_PROXY_BYTES) {
+                response.data.destroy();
+                res.destroy();
+            }
+        });
+        response.data.on('error', () => res.destroy());
+        res.on('close', () => response.data.destroy());
+
         response.data.pipe(res);
     } catch (error) {
         console.error('Proxy error:', error.message);
-        res.status(500).json({ error: 'Failed to proxy request' });
+        if (!res.headersSent) {
+            res.status(502).json({ error: 'Failed to proxy request' });
+        } else {
+            res.destroy();
+        }
     }
 });
 

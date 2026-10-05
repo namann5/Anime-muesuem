@@ -33,3 +33,7 @@ Thumbs.db
 *.output.txt
 test-output.txt
 quick-test-output.txt
+
+# Agent/orchestration state
+.claude-flow/
+.swarm/
