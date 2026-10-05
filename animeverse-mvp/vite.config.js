@@ -7,7 +7,7 @@ export default defineConfig({
     // Keep the default rollup behaviour: every route is React.lazy()'d, so
     // letting rollup derive chunks from the import graph already keeps the
     // landing page at ~277 kB. Forcing a manual vendor split was tried and
-    // reverted â€” naming three/hls chunks made them *static* deps of the entry,
+    // reverted -- naming three/hls chunks made them *static* deps of the entry,
     // which pushed the initial payload to ~1.75 MB.
     chunkSizeWarningLimit: 700,
   },
