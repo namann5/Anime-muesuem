@@ -10,6 +10,102 @@ const WatchAnime = React.lazy(() => import("./pages/WatchAnime"));
 const AnimeDetail = React.lazy(() => import("./pages/AnimeDetail"));
 const Support = React.lazy(() => import("./pages/Support"));
 
+const NAV_ITEMS = [
+  { id: "home", label: "Home" },
+  { id: "gallery", label: "Models" },
+  { id: "watch-anime", label: "Cinema" },
+  { id: "museum", label: "Museum" },
+  { id: "timeline", label: "Timeline" },
+  { id: "support", label: "Support" },
+];
+
+// Routes that can be deep-linked directly as `#gallery`, `#museum`, etc.
+const SIMPLE_ROUTES = new Set(NAV_ITEMS.map((item) => item.id));
+
+// "Cinema" owns both the cinema list and any open detail page.
+const isNavActive = (route, routeId) =>
+  routeId === "watch-anime"
+    ? route === "watch-anime" || route === "anime-detail"
+    : route === routeId;
+
+// Catches render/lazy-import failures for a single route and offers recovery,
+// so one broken page cannot blank the whole app.
+class RouteErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error("Route failed to render:", error, info);
+  }
+
+  render() {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-6 bg-anime-dark px-6 text-center">
+        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-anime-terracotta">
+          Exhibit temporarily closed
+        </p>
+        <h2 className="max-w-lg font-serif-accent text-3xl text-anime-cream sm:text-4xl">
+          This room failed to load.
+        </h2>
+        <p className="max-w-md text-sm leading-relaxed text-anime-cream/50">
+          The rest of the museum is still open. Retry this room, or head back
+          to the entrance.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <button
+            onClick={() => this.setState({ error: null })}
+            className="btn-modern btn-secondary-modern px-6 py-3"
+          >
+            Try again
+          </button>
+          <button
+            onClick={() => {
+              this.setState({ error: null });
+              if (this.props.onNavigate) this.props.onNavigate("home");
+            }}
+            className="btn-modern btn-primary-modern px-6 py-3"
+          >
+            Back to the entrance
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
+// Catch-all for unknown hashes, invalid anime ids, and empty detail routes.
+function NotFound({ onNavigate }) {
+  return (
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-6 bg-anime-dark px-6 text-center">
+      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-anime-terracotta">
+        Gallery not found
+      </p>
+      <h2 className="font-serif-accent text-6xl font-black text-anime-cream">
+        404
+      </h2>
+      <p className="max-w-md text-sm leading-relaxed text-anime-cream/50">
+        That room isn&apos;t in the collection. It may have been moved, or the
+        address was mistyped.
+      </p>
+      <button
+        onClick={() => onNavigate && onNavigate("home")}
+        className="btn-modern btn-primary-modern px-6 py-3"
+      >
+        Back to the entrance
+      </button>
+    </div>
+  );
+}
+
 // Loading Spinner for Suspense
 function PageLoader() {
   return (
@@ -56,15 +152,35 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove #
+      // An empty hash means in-app navigation cleared it — keep the current
+      // route instead of bouncing the user back to the entrance.
+      if (!hash) return;
+
       if (hash.startsWith("anime/")) {
-        const id = hash.split("/")[1];
-        setAnimeId(parseInt(id));
+        const id = Number.parseInt(hash.split("/")[1], 10);
+        if (!Number.isFinite(id)) {
+          setRoute("not-found");
+          return;
+        }
+        setAnimeId(id);
         setRoute("anime-detail");
-      } else if (hash.startsWith("museum/")) {
-        const id = hash.split("/")[1];
-        setAnimeId(parseInt(id));
-        setRoute("museum");
+        return;
       }
+
+      if (hash.startsWith("museum/")) {
+        const id = Number.parseInt(hash.split("/")[1], 10);
+        setAnimeId(Number.isFinite(id) ? id : null);
+        setRoute("museum");
+        return;
+      }
+
+      if (SIMPLE_ROUTES.has(hash)) {
+        setAnimeId(null);
+        setRoute(hash);
+        return;
+      }
+
+      setRoute("not-found");
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -97,52 +213,50 @@ export default function App() {
       <div className="noise-overlay" aria-hidden="true" />
       <nav className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-4xl">
         <div className="glass-modern px-6 sm:px-8 py-3.5 rounded-full flex items-center justify-between shadow-2xl">
-          <div
-            className="text-lg sm:text-xl font-black tracking-tight cursor-pointer group"
+          <button
             onClick={() => navigateTo("home")}
+            aria-current={route === "home" ? "page" : undefined}
+            className="text-lg sm:text-xl font-black tracking-tight group"
           >
             ANIME
             <span className="font-serif-accent font-normal text-anime-terracotta-soft group-hover:text-anime-cream transition-colors">
               verse
             </span>
-          </div>
+          </button>
 
           <div className="hidden md:flex items-center gap-8">
-            {[
-              { id: "home", label: "Home" },
-              { id: "gallery", label: "Models" },
-              { id: "watch-anime", label: "Cinema" },
-              { id: "museum", label: "Museum" },
-              { id: "timeline", label: "Timeline" },
-              { id: "support", label: "Support" },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() =>
-                  item.id === "gallery"
-                    ? handleGalleryClick()
-                    : navigateTo(item.id)
-                }
-                className={`text-[10px] font-bold tracking-[0.18em] uppercase transition-all relative py-2 ${
-                  route === item.id ||
-                  (item.id === "watch-anime" && route === "anime-detail")
-                    ? "text-anime-cream"
-                    : "text-anime-cream/40 hover:text-anime-cream"
-                }`}
-              >
-                {item.label}
-                {(route === item.id ||
-                  (item.id === "watch-anime" && route === "anime-detail")) && (
-                  <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-[2px] w-5 bg-anime-terracotta rounded-full"></div>
-                )}
-              </button>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const active = isNavActive(route, item.id);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() =>
+                    item.id === "gallery"
+                      ? handleGalleryClick()
+                      : navigateTo(item.id)
+                  }
+                  aria-current={active ? "page" : undefined}
+                  className={`text-[10px] font-bold tracking-[0.18em] uppercase transition-all relative py-2 ${
+                    active
+                      ? "text-anime-cream"
+                      : "text-anime-cream/40 hover:text-anime-cream"
+                  }`}
+                >
+                  {item.label}
+                  {active && (
+                    <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-[2px] w-5 bg-anime-terracotta rounded-full"></div>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-4">
             <button
               className="md:hidden glass-card-modern p-2 rounded-lg text-anime-cream"
               aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
             >
               <svg
@@ -167,33 +281,32 @@ export default function App() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 glass-modern rounded-2xl px-4 py-3">
+          <div
+            id="mobile-nav"
+            className="md:hidden mt-3 glass-modern rounded-2xl px-4 py-3"
+          >
             <div className="grid gap-2">
-              {[
-                { id: "home", label: "Home" },
-                { id: "gallery", label: "Models" },
-                { id: "watch-anime", label: "Cinema" },
-                { id: "museum", label: "Museum" },
-                { id: "timeline", label: "Timeline" },
-                { id: "support", label: "Support" },
-              ].map((item) => (
-                <button
-                  key={`mobile-${item.id}`}
-                  onClick={() =>
-                    item.id === "gallery"
-                      ? handleGalleryClick()
-                      : navigateTo(item.id)
-                  }
-                  className={`text-left rounded-lg px-3 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors ${
-                    route === item.id ||
-                    (item.id === "watch-anime" && route === "anime-detail")
-                      ? "text-anime-terracotta bg-white/5"
-                      : "text-anime-cream/60 hover:text-anime-cream hover:bg-white/5"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const active = isNavActive(route, item.id);
+                return (
+                  <button
+                    key={`mobile-${item.id}`}
+                    onClick={() =>
+                      item.id === "gallery"
+                        ? handleGalleryClick()
+                        : navigateTo(item.id)
+                    }
+                    aria-current={active ? "page" : undefined}
+                    className={`text-left rounded-lg px-3 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors ${
+                      active
+                        ? "text-anime-terracotta bg-white/5"
+                        : "text-anime-cream/60 hover:text-anime-cream hover:bg-white/5"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -201,46 +314,57 @@ export default function App() {
 
       {/* Page rendering with transitions and suspense */}
       <main className="w-full min-h-screen bg-anime-dark">
-        <Suspense fallback={<PageLoader />}>
-          {route === "home" && (
-            <PageTransition key="home">
-              <Home onEnter={() => navigateTo("gallery")} />
-            </PageTransition>
-          )}
-          {route === "gallery" && (
-            <PageTransition key="gallery">
-              <Gallery showControls={showControls} />
-            </PageTransition>
-          )}
-          {route === "watch-anime" && (
-            <PageTransition key="watch-anime">
-              <WatchAnime />
-            </PageTransition>
-          )}
-          {route === "anime-detail" && animeId && (
-            <PageTransition key={`anime-${animeId}`}>
-              <AnimeDetail
-                malId={animeId}
-                onBack={() => navigateTo("watch-anime")}
-              />
-            </PageTransition>
-          )}
-          {route === "museum" && (
-            <PageTransition key={`museum-${animeId || "main"}`}>
-              <Museum animeFilter={animeId} />
-            </PageTransition>
-          )}
-          {route === "timeline" && (
-            <PageTransition key="timeline">
-              <AnimeTimeline />
-            </PageTransition>
-          )}
-          {route === "support" && (
-            <PageTransition key="support">
-              <Support />
-            </PageTransition>
-          )}
-        </Suspense>
+        {/* Keyed on route so a crash in one page cannot persist across navigation */}
+        <RouteErrorBoundary key={route} onNavigate={navigateTo}>
+          <Suspense fallback={<PageLoader />}>
+            {route === "home" && (
+              <PageTransition key="home">
+                <Home
+                  onEnter={() => navigateTo("museum")}
+                  onExplore={() => navigateTo("gallery")}
+                  onNavigate={navigateTo}
+                />
+              </PageTransition>
+            )}
+            {route === "gallery" && (
+              <PageTransition key="gallery">
+                <Gallery showControls={showControls} />
+              </PageTransition>
+            )}
+            {route === "watch-anime" && (
+              <PageTransition key="watch-anime">
+                <WatchAnime />
+              </PageTransition>
+            )}
+            {route === "anime-detail" &&
+              (animeId ? (
+                <PageTransition key={`anime-${animeId}`}>
+                  <AnimeDetail
+                    malId={animeId}
+                    onBack={() => navigateTo("watch-anime")}
+                  />
+                </PageTransition>
+              ) : (
+                <NotFound onNavigate={navigateTo} />
+              ))}
+            {route === "museum" && (
+              <PageTransition key={`museum-${animeId || "main"}`}>
+                <Museum animeFilter={animeId} />
+              </PageTransition>
+            )}
+            {route === "timeline" && (
+              <PageTransition key="timeline">
+                <AnimeTimeline />
+              </PageTransition>
+            )}
+            {route === "support" && (
+              <PageTransition key="support">
+                <Support />
+              </PageTransition>
+            )}
+            {route === "not-found" && <NotFound onNavigate={navigateTo} />}
+          </Suspense>
+        </RouteErrorBoundary>
       </main>
     </div>
   );

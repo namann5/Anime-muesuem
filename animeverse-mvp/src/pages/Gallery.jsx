@@ -18,6 +18,7 @@ import {
   getAllCharacters,
   deleteCharacter,
 } from "../services/characterService";
+import { watchAdminAuth, signOutAdmin } from "../services/adminAuth";
 
 export default function Gallery({ showControls = false }) {
   const [modelSrc, setModelSrc] = useState("/models/hero.glb");
@@ -45,10 +46,10 @@ export default function Gallery({ showControls = false }) {
   const [viewMode, setViewMode] = useState("3d");
   const [sortBy, setSortBy] = useState("name");
 
-  useEffect(() => {
-    const adminStatus = sessionStorage.getItem("isAdmin") === "true";
-    setIsAdmin(adminStatus);
-  }, []);
+  // Admin status mirrors the real Firebase Auth session rather than a
+  // forgeable sessionStorage flag, so it survives a reload and cannot be
+  // flipped from the console.
+  useEffect(() => watchAdminAuth((user) => setIsAdmin(Boolean(user))), []);
 
   useEffect(() => {
     async function loadCharacters() {
@@ -77,8 +78,12 @@ export default function Gallery({ showControls = false }) {
     setIsAdmin(true);
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("isAdmin");
+  const handleLogout = async () => {
+    try {
+      await signOutAdmin();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
     setIsAdmin(false);
   };
 

@@ -1,19 +1,15 @@
 :root {
-  --bg: #0a0a0b;
   --muted: #a1a094;
-  --accent: #d97a5c;
 }
 html,
 body,
 #root {
   height: 100%;
 }
+/* margin / font-family / color are set once in src/index.css. Only the
+   gradient wash unique to this layer is declared here. */
 body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
   background: linear-gradient(180deg, #0a0a0b 0%, #101013 100%);
-  color: #e1e0cc;
 }
 
 /* Skip link styles */

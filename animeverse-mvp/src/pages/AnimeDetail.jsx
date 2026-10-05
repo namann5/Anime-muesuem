@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import gsap from "gsap";
 import {
   getAnimeDetails,
@@ -7,8 +7,11 @@ import {
 } from "../services/animeService";
 import { findAnimeByTitle, getAnimeInfo } from "../api/anilistApi";
 import { getPublicStreamInfo } from "../api/streamingApi";
-import AnimePlayer from "../components/AnimePlayer";
 import EpisodeList from "../components/EpisodeList";
+
+// hls.js is ~450 kB and is only needed once an episode is actually picked,
+// so keep it off the detail route's initial payload.
+const AnimePlayer = React.lazy(() => import("../components/AnimePlayer"));
 
 export default function AnimeDetail({ malId, onBack }) {
   const [anime, setAnime] = useState(null);
@@ -283,16 +286,26 @@ export default function AnimeDetail({ malId, onBack }) {
                 </div>
               ) : currentEpisode ? (
                 <div className="glass-modern p-2 rounded-[2rem] overflow-hidden">
-                  <AnimePlayer
-                    episodeId={currentEpisode.id}
-                    sourceBase={currentEpisode._base || null}
-                    episodeNumber={currentEpisodeNumber}
-                    animeTitle={anime.title}
-                    onNext={handleNextEpisode}
-                    onPrevious={handlePreviousEpisode}
-                    hasNext={currentEpisodeNumber < episodes.length}
-                    hasPrevious={currentEpisodeNumber > 1}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="aspect-video flex items-center justify-center">
+                        <div className="text-anime-terracotta animate-pulse font-bold tracking-[0.15em] uppercase">
+                          Loading player…
+                        </div>
+                      </div>
+                    }
+                  >
+                    <AnimePlayer
+                      episodeId={currentEpisode.id}
+                      sourceBase={currentEpisode._base || null}
+                      episodeNumber={currentEpisodeNumber}
+                      animeTitle={anime.title}
+                      onNext={handleNextEpisode}
+                      onPrevious={handlePreviousEpisode}
+                      hasNext={currentEpisodeNumber < episodes.length}
+                      hasPrevious={currentEpisodeNumber > 1}
+                    />
+                  </Suspense>
                 </div>
               ) : (
                 <div className="aspect-video glass-modern rounded-3xl flex flex-col items-center justify-center p-8 md:p-12 text-center">

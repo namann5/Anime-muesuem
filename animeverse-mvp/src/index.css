@@ -5,13 +5,9 @@
 @tailwind utilities;
 
 :root {
+  /* Only variables actually referenced via var() live here. Tailwind colour
+     tokens are the source of truth; these cover raw CSS surfaces only. */
   --anime-dark: #0a0a0b;
-  --anime-card: #1b1b1e;
-  --anime-pink: #d97a5c;
-  --anime-pink-light: #de9074;
-  --anime-purple: #776f64;
-  --anime-blue: #6c808d;
-  --anime-accent: #6fa08c;
   --cream: #e1e0cc;
   --glass: rgba(18, 18, 20, 0.72);
   --glass-border: rgba(225, 224, 204, 0.08);

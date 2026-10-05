@@ -1,8 +1,10 @@
 import React, { Suspense, useRef, useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Float } from "@react-three/drei";
 import gsap from "gsap";
-import ScenePortal from "../components/ScenePortal";
+
+// three.js / drei / ScenePortal live behind this boundary (~800 kB). Keeping
+// it lazy means the landing page no longer pulls the WebGL graph on load --
+// the bytes arrive only when the preview section actually scrolls into view.
+const PreviewScene = React.lazy(() => import("../components/PreviewScene"));
 
 function useInView(ref, rootMargin = "200px") {
   const [inView, setInView] = useState(false);
@@ -23,7 +25,7 @@ function useInView(ref, rootMargin = "200px") {
   return inView;
 }
 
-export default function Home({ onEnter }) {
+export default function Home({ onEnter, onExplore, onNavigate }) {
   const containerRef = useRef();
   const heroRef = useRef();
   const bentoRef = useRef();
@@ -64,6 +66,7 @@ export default function Home({ onEnter }) {
       icon: "🎬",
       class: "bento-item-1",
       gradient: "from-[#D97A5C]/20 to-[#8F8577]/10",
+      destination: "watch-anime",
     },
     {
       id: 2,
@@ -72,6 +75,7 @@ export default function Home({ onEnter }) {
       icon: "🖼️",
       class: "bento-item-2",
       gradient: "from-[#8F8577]/20 to-[#6C808D]/10",
+      destination: "gallery",
     },
     {
       id: 3,
@@ -80,6 +84,7 @@ export default function Home({ onEnter }) {
       icon: "🏛️",
       class: "bento-item-3",
       gradient: "from-[#6C808D]/20 to-[#6FA08C]/10",
+      destination: "museum",
     },
     {
       id: 4,
@@ -88,6 +93,7 @@ export default function Home({ onEnter }) {
       icon: "📅",
       class: "bento-item-4",
       gradient: "from-[#D97A5C]/20 to-[#C98C4C]/10",
+      destination: "timeline",
     },
   ];
 
@@ -131,10 +137,7 @@ export default function Home({ onEnter }) {
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
             <button
-              onClick={() => {
-                if (onEnter) onEnter();
-                window.dispatchEvent(new CustomEvent("enterMuseum"));
-              }}
+              onClick={() => onEnter && onEnter()}
               className="btn-modern btn-primary-modern text-base sm:text-lg px-7 sm:px-10 py-3.5 sm:py-4 group"
             >
               Enter the Museum
@@ -143,7 +146,7 @@ export default function Home({ onEnter }) {
               </span>
             </button>
             <button
-              onClick={() => onEnter && onEnter()}
+              onClick={() => onExplore && onExplore()}
               className="btn-modern btn-secondary-modern text-base sm:text-lg px-7 sm:px-10 py-3.5 sm:py-4"
             >
               Explore Features
@@ -180,8 +183,17 @@ export default function Home({ onEnter }) {
             {features.map((f) => (
               <div
                 key={f.id}
-                className={`bento-item glass-card-modern group cursor-pointer ${f.class}`}
-                onClick={() => onEnter && onEnter()}
+                role="button"
+                tabIndex={0}
+                onClick={() => onNavigate && onNavigate(f.destination)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    if (onNavigate) onNavigate(f.destination);
+                  }
+                }}
+                aria-label={`${f.title} — discover`}
+                className={`bento-item glass-card-modern group cursor-pointer relative ${f.class}`}
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
@@ -216,31 +228,11 @@ export default function Home({ onEnter }) {
           className="container mx-auto px-4 md:px-6 py-12 md:py-24"
         >
           <div className="glass-modern rounded-[2rem] md:rounded-[3rem] p-4 h-[320px] md:h-[600px] relative overflow-hidden group">
-            <div className="absolute inset-0 z-0">
-              {previewInView && (
-                <Canvas
-                  shadows={false}
-                  dpr={[1, 1.5]}
-                  camera={{ position: [0, 1.5, 5], fov: 50 }}
-                >
-                  <ambientLight intensity={0.35} />
-                  <directionalLight position={[5, 8, 5]} intensity={0.5} />
-                  <spotLight
-                    position={[0, 5, 3]}
-                    angle={0.3}
-                    penumbra={1}
-                    intensity={0.9}
-                    color="#E1E0CC"
-                  />
-                  <Suspense fallback={null}>
-                    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.4}>
-                      <ScenePortal />
-                    </Float>
-                  </Suspense>
-                  <OrbitControls enableZoom={false} enablePan={false} />
-                </Canvas>
-              )}
-            </div>
+            {previewInView && (
+              <Suspense fallback={null}>
+                <PreviewScene />
+              </Suspense>
+            )}
 
             <div className="absolute top-10 left-8 sm:top-12 sm:left-12 z-10 max-w-sm pointer-events-none">
               <div className="glass-card-modern p-5 sm:p-6 rounded-2xl">

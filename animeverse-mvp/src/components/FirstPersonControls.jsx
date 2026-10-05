@@ -3,7 +3,9 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { PointerLockControls } from "@react-three/drei";
 import * as THREE from "three";
 
-export default function FirstPersonControls({ speed = 5, lookSpeed = 0.002 }) {
+const REPORT_INTERVAL = 1 / 15;
+
+export default function FirstPersonControls({ speed = 5, onPositionChange }) {
   const { camera, gl } = useThree();
   const controlsRef = useRef();
   const moveState = useRef({
@@ -14,8 +16,13 @@ export default function FirstPersonControls({ speed = 5, lookSpeed = 0.002 }) {
     shift: false,
   });
 
+  // Scratch vectors, hoisted so the frame loop allocates nothing.
   const velocity = useRef(new THREE.Vector3());
   const direction = useRef(new THREE.Vector3());
+  const cameraDirection = useRef(new THREE.Vector3());
+  const cameraRight = useRef(new THREE.Vector3());
+  const nextPosition = useRef(new THREE.Vector3());
+  const reportTimer = useRef(0);
 
   useEffect(() => {
     // Set camera to eye level
@@ -97,23 +104,24 @@ export default function FirstPersonControls({ speed = 5, lookSpeed = 0.002 }) {
     direction.current.normalize();
 
     // Apply camera rotation to movement direction
-    const cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
-    cameraDirection.y = 0; // Keep movement horizontal
-    cameraDirection.normalize();
+    cameraDirection.current.set(0, 0, 0);
+    camera.getWorldDirection(cameraDirection.current);
+    cameraDirection.current.y = 0; // Keep movement horizontal
+    cameraDirection.current.normalize();
 
-    const cameraRight = new THREE.Vector3();
-    cameraRight.crossVectors(camera.up, cameraDirection).normalize();
+    cameraRight.current
+      .crossVectors(camera.up, cameraDirection.current)
+      .normalize();
 
     // Calculate final velocity
     velocity.current.set(0, 0, 0);
-    velocity.current.addScaledVector(cameraDirection, -direction.current.z);
-    velocity.current.addScaledVector(cameraRight, -direction.current.x);
+    velocity.current.addScaledVector(cameraDirection.current, -direction.current.z);
+    velocity.current.addScaledVector(cameraRight.current, -direction.current.x);
 
     // Apply movement
     const moveDistance = actualSpeed * delta;
-    const newPosition = camera.position.clone();
-    newPosition.add(velocity.current.multiplyScalar(moveDistance));
+    nextPosition.current.copy(camera.position);
+    nextPosition.current.add(velocity.current.multiplyScalar(moveDistance));
 
     // Collision detection - keep within museum bounds
     const bounds = {
@@ -124,16 +132,26 @@ export default function FirstPersonControls({ speed = 5, lookSpeed = 0.002 }) {
     };
 
     if (
-      newPosition.x >= bounds.minX &&
-      newPosition.x <= bounds.maxX &&
-      newPosition.z >= bounds.minZ &&
-      newPosition.z <= bounds.maxZ
+      nextPosition.current.x >= bounds.minX &&
+      nextPosition.current.x <= bounds.maxX &&
+      nextPosition.current.z >= bounds.minZ &&
+      nextPosition.current.z <= bounds.maxZ
     ) {
-      camera.position.copy(newPosition);
+      camera.position.copy(nextPosition.current);
     }
 
     // Keep camera at eye level
     camera.position.y = 1.7;
+
+    // Report position to the consumer (radar/minimap), throttled so a React
+    // state update never runs more than ~15x per second.
+    if (onPositionChange) {
+      reportTimer.current += delta;
+      if (reportTimer.current >= REPORT_INTERVAL) {
+        reportTimer.current = 0;
+        onPositionChange(camera.position);
+      }
+    }
   });
 
   return (

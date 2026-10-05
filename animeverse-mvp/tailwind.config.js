@@ -7,6 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Core brand palette. `terracotta` is the canonical accent; the
+        // `pink*` entries below are its legacy aliases (identical values)
+        // and are kept because ~55 call sites still reference them.
         anime: {
           cream: "#E1E0CC",
           'cream-muted': "#A1A094",
@@ -14,14 +17,11 @@ module.exports = {
           terracotta: "#D97A5C",
           'terracotta-soft': "#E09A7F",
           dark: "#0A0A0B",
-          'dark-secondary': "#141416",
           'dark-card': "#1B1B1E",
           line: "rgba(225, 224, 204, 0.08)",
           pink: "#D97A5C",
           'pink-light': "#DE9074",
-          'pink-lighter': "#E8B49B",
           muted: "#A1A094",
-          accent: "#D97A5C",
         },
         pink: {
           300: "#E8B49B",
@@ -45,11 +45,6 @@ module.exports = {
           400: "#A1907B",
           500: "#8B7D6A",
           600: "#6B5E4E",
-        },
-        indigo: {
-          400: "#7E7A8A",
-          500: "#6A6674",
-          600: "#585462",
         },
         cyan: {
           300: "#7FA3A3",
@@ -76,9 +71,6 @@ module.exports = {
         emerald: {
           400: "#6FA08C",
           500: "#5A8B78",
-        },
-        teal: {
-          400: "#5F9494",
         },
       },
       fontFamily: {
