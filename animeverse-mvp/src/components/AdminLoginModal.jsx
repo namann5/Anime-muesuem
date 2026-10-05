@@ -1,23 +1,56 @@
 import React, { useState } from "react";
-import { ADMIN_PASSWORD } from "../config/adminPassword";
+import { signInAdmin } from "../services/adminAuth";
 
 export default function AdminLoginModal({ isOpen, onClose, onSuccess }) {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const reset = () => {
+    setEmail("");
+    setPassword("");
+    setError("");
+    setSubmitting(false);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password === ADMIN_PASSWORD) {
-      // Save admin status to sessionStorage
-      sessionStorage.setItem("isAdmin", "true");
+    setSubmitting(true);
+    setError("");
+
+    try {
+      // Firebase Auth is the ONLY credential check here. There is deliberately
+      // no build-time password comparison: VITE_* values are inlined into the
+      // public bundle, so requiring one would force the real account password to
+      // be a publicly readable string and hand out write access to every
+      // visitor. Write access is gated by the admin custom claim in
+      // firestore.rules / storage.rules instead.
+      await signInAdmin(email.trim(), password);
+      reset();
       onSuccess();
       onClose();
+    } catch (err) {
+      console.error("Admin sign-in failed:", err);
+      const code = err && err.code;
+      if (
+        code === "auth/invalid-credential" ||
+        code === "auth/wrong-password" ||
+        code === "auth/user-not-found"
+      ) {
+        setError("Those admin credentials were not recognised.");
+      } else if (code === "auth/too-many-requests") {
+        setError("Too many attempts. Please wait and try again.");
+      } else if (code === "auth/operation-not-allowed") {
+        setError(
+          "Email/password sign-in is not enabled for this Firebase project."
+        );
+      } else {
+        setError("Could not sign in. Please try again.");
+      }
       setPassword("");
-      setError("");
-    } else {
-      setError("Incorrect password. Please try again.");
-      setPassword("");
+      setSubmitting(false);
     }
   };
 
@@ -29,6 +62,7 @@ export default function AdminLoginModal({ isOpen, onClose, onSuccess }) {
         {/* Close button */}
         <button
           onClick={onClose}
+          aria-label="Close"
           className="absolute right-4 top-4 text-2xl text-white/60 transition-colors hover:text-white"
         >
           ×
@@ -39,29 +73,51 @@ export default function AdminLoginModal({ isOpen, onClose, onSuccess }) {
           Admin Access
         </h2>
         <p className="mb-6 text-sm text-anime-muted">
-          Enter admin password to upload characters
+          Sign in with your administrator account to upload characters
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Password Input */}
+          {/* Email Input */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-white">
-              Password
+            <label htmlFor="admin-email" className="mb-1 block text-sm font-medium text-white">
+              Email
             </label>
             <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter admin password"
+              id="admin-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              autoComplete="username"
               className="w-full rounded-lg border border-anime-pink/30 bg-white/5 px-4 py-2 text-white placeholder-white/40 focus:border-anime-pink focus:outline-none focus:ring-2 focus:ring-anime-pink/50"
               autoFocus
               required
             />
           </div>
 
+          {/* Password Input */}
+          <div>
+            <label htmlFor="admin-password" className="mb-1 block text-sm font-medium text-white">
+              Password
+            </label>
+            <input
+              id="admin-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter admin password"
+              autoComplete="current-password"
+              className="w-full rounded-lg border border-anime-pink/30 bg-white/5 px-4 py-2 text-white placeholder-white/40 focus:border-anime-pink focus:outline-none focus:ring-2 focus:ring-anime-pink/50"
+              required
+            />
+          </div>
+
           {/* Error Message */}
           {error && (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
+            <div
+              role="alert"
+              className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400"
+            >
               {error}
             </div>
           )}
@@ -77,9 +133,10 @@ export default function AdminLoginModal({ isOpen, onClose, onSuccess }) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-gradient-anime px-4 py-2 font-bold text-anime-dark shadow-lg shadow-anime-pink/30 transition-all hover:-translate-y-0.5 hover:shadow-anime-pink/50"
+              disabled={submitting}
+              className="flex-1 rounded-lg bg-gradient-anime px-4 py-2 font-bold text-anime-dark shadow-lg shadow-anime-pink/30 transition-all hover:-translate-y-0.5 hover:shadow-anime-pink/50 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              Login
+              {submitting ? "Signing in…" : "Login"}
             </button>
           </div>
         </form>

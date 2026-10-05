@@ -1,13 +1,4 @@
-import { storage, db } from "../lib/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { loadFirebase } from "../lib/firebase";
 
 /**
  * Upload a character model and metadata to Firebase
@@ -17,11 +8,10 @@ import {
  * @returns {Promise<Object>} - The created character document
  */
 export async function uploadCharacter(modelFile, metadata, onProgress) {
-  if (!storage || !db) {
-    throw new Error(
-      "Firebase is not initialized. Please configure Firebase credentials."
-    );
-  }
+  const { storage, db } = await loadFirebase();
+  const [{ ref, uploadBytesResumable, getDownloadURL }, firestore] =
+    await Promise.all([import("firebase/storage"), import("firebase/firestore")]);
+  const { collection, addDoc, serverTimestamp } = firestore;
 
   // Validate file type
   if (!modelFile.name.endsWith(".glb") && !modelFile.name.endsWith(".gltf")) {
@@ -91,13 +81,10 @@ export async function uploadCharacter(modelFile, metadata, onProgress) {
  * @returns {Promise<Array>} - Array of character objects
  */
 export async function getAllCharacters() {
-  if (!db) {
-    // Return empty array if Firebase not configured
-    console.warn("Firebase not configured, returning empty character list");
-    return [];
-  }
-
   try {
+    const { db } = await loadFirebase();
+    const { collection, getDocs } = await import("firebase/firestore");
+
     const querySnapshot = await getDocs(collection(db, "characters"));
     const characters = [];
 
@@ -110,8 +97,9 @@ export async function getAllCharacters() {
 
     return characters;
   } catch (error) {
+    // Network/auth failures must not take down the static exhibit list.
     console.error("Error fetching characters:", error);
-    throw error;
+    return [];
   }
 }
 
@@ -121,9 +109,8 @@ export async function getAllCharacters() {
  * @returns {Promise<void>}
  */
 export async function deleteCharacter(characterId) {
-  if (!db || !storage) {
-    throw new Error("Firebase is not initialized");
-  }
+  const { db } = await loadFirebase();
+  const { deleteDoc, doc } = await import("firebase/firestore");
 
   try {
     // Delete from Firestore

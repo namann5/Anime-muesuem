@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// AnimeMuseum Firestore rules.
+//
+// READ is public: the gallery loads character documents for every visitor and
+// must keep working while signed out.
+//
+// WRITE requires the `admin` custom claim on the caller's ID token, NOT merely
+// a signed-in session. Any authenticated visitor can create their own Firebase
+// account, so `request.auth != null` alone would leave the collection writable
+// by the public. Mint the claim with:
+//
+//   node scripts/set-admin-claim.mjs <admin-email>
+//
+// Deploy with:  firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A caller is an admin only when Firebase Auth has put `admin: true` on the
+    // token. The claim is set server-side by the Admin SDK and cannot be
+    // self-assigned by a client.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.admin == true;
+    }
+
+    match /characters/{characterId} {
+      // Public read so the exhibit list works for visitors.
+      allow read: if true;
+
+      allow create, update, delete: if isAdmin();
+
+      // Character metadata is written by the upload modal; keep required fields
+      // non-empty so a malformed write cannot break the gallery render.
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['name', 'modelUrl'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 200
+        && request.resource.data.modelUrl is string
+        && request.resource.data.modelUrl.size() > 0;
+    }
+
+    // Default deny for anything not explicitly allowed above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

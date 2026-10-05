@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// AnimeMuseum Cloud Storage rules.
+//
+// The gallery needs to download uploaded character models so READ must stay
+// public. WRITE is what must be locked down: while Storage ran on its default
+// test-mode rules, anyone could upload to or overwrite anything in the bucket,
+// and the getDownloadURL call in characterService.js would hand out permanent
+// public URLs.
+//
+// WRITE requires the `admin` custom claim, matching firestore.rules. Anyone can
+// self-register an account, so `request.auth != null` is not sufficient.
+//
+// Deploy with:  firebase deploy --only storage
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.admin == true;
+    }
+
+    // 50 MB ceiling on character models.
+    function underSizeLimit() {
+      return request.resource.size < 50 * 1024 * 1024;
+    }
+
+    // Character models: public read, admin-only write.
+    match /models/{allPaths=**} {
+      allow read: if true;
+
+      // `request.resource` is null on delete, so the size check cannot apply to
+      // deletes; only check it where a resource is actually being written.
+      allow create, update: if isAdmin() && underSizeLimit();
+      allow delete: if isAdmin();
+    }
+
+    // Default deny for every other path in the bucket.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
